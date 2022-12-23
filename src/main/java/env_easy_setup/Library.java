@@ -3,8 +3,26 @@
  */
 package env_easy_setup;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import env_easy_setup.Model.AppsConfiguration;
+import env_easy_setup.Model.Docker;
+
+@Component
 public class Library {
-    public boolean someLibraryMethod() {
-        return true;
+	@Autowired
+	private AppsConfiguration appsConfiguration;
+    public void printFields() {
+    	
+    	System.out.println(appsConfiguration.getDocker().getVersion());
+
+    	System.out.println(appsConfiguration.getElasticsearch().getVersion());
+
+    	System.out.println(appsConfiguration.getFilebeat().getVersion());
+    	
+    	System.out.println(appsConfiguration.getHarbor().getVersion());
+
+    	
     }
 }

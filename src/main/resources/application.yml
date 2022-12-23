@@ -1,0 +1,51 @@
+file-source-path:
+  path: /
+  os: linux
+  memory: 
+  storage: 
+apps:
+  docker:
+    version: '20.10.21-3'
+    select: true
+  harbor: 
+    version: '2.6.1'
+    select: true
+  rke2:
+    version: '1.24.8'
+    select: true
+  rancher:
+    version: '2.6.9'
+  kafka:
+    version: '2.13-3.31'
+    select: true
+  elasticsearch:
+    version: '7.17'
+    select: true
+  kibana:
+    version: '7.17'
+  filebeat:
+    version: '7.17'
+    select: true
+  sys-be-inited: false
+  tls-config:
+      mode: true
+      parameter:
+        - name: elasticsearch
+          type: PKCS12
+          subject:
+        - name: kibana
+          type: cert
+          subject:
+        - name: harbor
+          type: cert
+          subject:
+        - name: kafka
+          type: JKS
+          subject:
+        - name: filebeat
+          type: cert
+          subject:
+  
+   
+    
+  
