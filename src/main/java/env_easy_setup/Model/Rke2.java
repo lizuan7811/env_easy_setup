@@ -2,13 +2,14 @@ package env_easy_setup.Model;
 
 import org.springframework.context.annotation.Configuration;
 
+import env_easy_setup.IBaseConfig;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Configuration
-public class Rke2 {
+public class Rke2  implements IBaseConfig{
 		
 		private String version;
 		

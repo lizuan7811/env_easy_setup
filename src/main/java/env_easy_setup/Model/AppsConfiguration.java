@@ -26,6 +26,4 @@ public class AppsConfiguration {
 	
 	private Boolean sysBeInited;
 	
-	private TlsConfig tlsConfig;
-	
 }
