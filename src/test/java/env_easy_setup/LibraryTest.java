@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import env_easy_setup.Model.AppsConfiguration;
-
 @SpringBootTest(classes=Library.class)
 public class LibraryTest {
 	@Autowired

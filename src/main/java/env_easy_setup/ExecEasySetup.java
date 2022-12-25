@@ -1,26 +1,16 @@
 package env_easy_setup;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import env_easy_setup.Model.AppsConfiguration;
 
 @SpringBootApplication
 @SpringBootConfiguration
 public class ExecEasySetup {
-	
-	private final AppsConfiguration appsConfiguration;
-	
-	@Autowired
-	public ExecEasySetup(AppsConfiguration appsConfiguration) {
-		this.appsConfiguration=appsConfiguration;
-	}
-	
+
 	
 	public static void main(String[] args) {
-//		SpringApplication.run(ExecEasySetup.class,args);
 		SpringApplication sa=new SpringApplication(ExecEasySetup.class);
 		
         ConfigurableApplicationContext cac=sa.run(args);

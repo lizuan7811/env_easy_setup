@@ -4,29 +4,42 @@ sys-info:
   memory: 
   storage: 
 apps:
+  sysinfo:
+    version: '1.0.0'
+    select: true
+    rpm-path:
   docker:
     version: '20.10.21-3'
     select: true
+    rpm-path:
   harbor: 
     version: '2.6.1'
     select: true
+    rpm-path:
   rke2:
     version: '1.24.8'
     select: true
+    rpm-path:
   rancher:
     version: '2.6.9'
+    select: true
+    rpm-path:
   kafka:
     version: '2.13-3.31'
     select: true
+    rpm-path:
   elasticsearch:
     version: '7.17'
     select: true
+    rpm-path:
   kibana:
     version: '7.17'
+    select: true
+    rpm-path:
   filebeat:
     version: '7.17'
     select: true
-  sys-be-inited: false
+    rpm-path:
 tls-config:
     encrypt-conn: true
     key-model:

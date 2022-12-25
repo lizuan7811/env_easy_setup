@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Configuration
-public class Rancher implements IBaseConfig{
+public class Sysinfo implements IBaseConfig{
 	
 	private String version;
 	

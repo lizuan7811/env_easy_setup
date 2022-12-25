@@ -7,19 +7,10 @@ sourceCompatibility = '11'
 repositories {
     mavenCentral()
 }
-compileJava.dependsOn('clearDist')
-task clearDist() {
-	delete "$buildDir/libs"
-}
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
+
+
 
 dependencies {
-
-
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
 	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.6.9'
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter
@@ -69,5 +60,4 @@ dependencies {
 //    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 //    annotationProcessor 'org.projectlombok:lombok'
 //    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    
 }
