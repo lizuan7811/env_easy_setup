@@ -17,14 +17,5 @@ public class Library {
 	
     public void printFields() {
     	everyStepMethod.initSysInfo();
-//    	System.out.println(appsConfiguration.getDocker().getVersion());
-//
-//    	System.out.println(appsConfiguration.getElasticsearch().getVersion());
-//
-//    	System.out.println(appsConfiguration.getFilebeat().getVersion());
-//    	
-//    	System.out.println(appsConfiguration.getHarbor().getVersion());
-
-    	
     }
 }

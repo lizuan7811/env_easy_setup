@@ -1,6 +1,8 @@
 package env_easy_setup;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -8,18 +10,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.assertj.core.util.Arrays;
+import org.apache.tika.utils.StreamGobbler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
+import ch.qos.logback.core.util.FileUtil;
 import lombok.Data;
 //讀取要執行的資料
 
@@ -35,12 +41,14 @@ import lombok.Data;
 @Configuration
 public class EveryStepMethod {
 	private final AppsConfiguration appsConfiguration;
+
 	@Autowired
 	public EveryStepMethod(AppsConfiguration appsConfiguration) {
 		this.appsConfiguration = appsConfiguration;
 	}
+
 	private List<String> selectedItems;
-	
+
 	private BigDecimal cpu;
 
 	private BigDecimal availableMem;
@@ -49,16 +57,17 @@ public class EveryStepMethod {
 
 	private String[] existItems;
 
+	private Map<String, String> itemsPathMap;
+
 	/**
 	 * 開始安裝程式
 	 */
 	public void startSetup() {
-		 if(initSysInfo()) {
-			 execShellScript(this.selectedItems);
-		 }
+		if (initSysInfo()) {
+			execShellScript(this.selectedItems);
+		}
 	}
-	
-	
+
 	/**
 	 * 初始化系統資訊
 	 */
@@ -111,7 +120,13 @@ public class EveryStepMethod {
 			fileStream.forEach(path -> {
 				String fileName = path.toFile().getName();
 				String cutedFileName = fileName.substring(0, fileName.indexOf('-'));
-				copiedItemsList.remove(cutedFileName);
+				if (copiedItemsList.contains(cutedFileName)) {
+					itemsPathMap.put(cutedFileName, path.toString());
+					copiedItemsList.remove(cutedFileName);
+				}
+
+				setExecAuth(path);
+
 			});
 			fileStream.close();
 //		迭代查看是否找到不存在的檔案並印出
@@ -134,6 +149,62 @@ public class EveryStepMethod {
 
 	private void execShellScript(List<String> selectedItems) {
 		System.out.println(">>>>>>start execShellScript!");
+
+//		根據list中的項目執行相對應的shell script。
+		assert (itemsPathMap.size() > 0);
+		setup(new IBaseConfig() {
+			@Override
+			public Boolean getSelect() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		});
+//		初始化系統
+//		安裝Docker指令
+//		安裝RKE2指令
+	}
+
+	private void setup(IBaseConfig ibaseConfig) {
+
+	}
+
+	private void setExecAuth(Path shellPath) {
+		try {
+			ProcessBuilder processBuild = new ProcessBuilder("chmod", "+x", shellPath.toString());
+			Process process = processBuild.start();
+			process.waitFor();
+			printResult(process);
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	/**
+	 * 執行Shell Script
+	 */
+	private void processBuilder(Path shellPath) {
+		try {
+			ProcessBuilder processBuild = new ProcessBuilder(String.format("./%s", shellPath.toFile().getName()));
+			Process process = processBuild.start();
+			process.waitFor();
+			printResult(process);
+
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void printResult(Process process) {
+		try (Stream<String> brSuccess = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-8")).lines();
+				Stream<String> brError = new BufferedReader(new InputStreamReader(process.getErrorStream(), "UTF-8")).lines();) {
+//			List<String> brSuccess=new BufferedReader(new InputStreamReader(process.getInputStream(),"UTF-8")).lines().collect(Collectors.toList());
+//			List<String> brError=new BufferedReader(new InputStreamReader(process.getErrorStream(),"UTF-8")).lines().collect(Collectors.toList());
+			brSuccess.forEach(System.out::println);
+			brError.forEach(System.out::println);
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
 	}
 
 }
