@@ -2,9 +2,9 @@ package env_easy_setup.Model;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringTokenizer;
-import org.assertj.core.util.Arrays;
 import org.springframework.util.ReflectionUtils;
 import lombok.Data;
 
