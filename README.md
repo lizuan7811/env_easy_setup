@@ -4,4 +4,4 @@
 ### Use Kafka、Kibana、Elasticsearch、RKE2 opts...!
 
 ### RKE2(k8s)
-1. 使用Deploymnent佈署pod，若Clusters中的一Node關閉，過幾分鐘後，master會自動偵測node及pod狀態，調整pod的狀態以及刪除pod，重新佈署新的pod到活著的node，直到關閉或斷線的node再次連線到cluster，就會刪掉deployment佈署的被標記為terminating的pod，而statefulset原本被terminating的pod，連線後，會再次活起來。
+1. 使用Deploymnent佈署Pod，若Clusters中的一Node關閉，過幾分鐘後，Master會自動偵測Node及Pod狀態，更新Pod的狀態(Running->Terminatin)，重新佈署新的Pod到活著的Node，直到關閉或斷線的Node再次連線到Cluster，就會刪掉Deployment佈署的被標記為Terminating的Pod，而Statefulset原本被Terminating的Pod，連線後，會再次活起來。
