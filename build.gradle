@@ -100,50 +100,60 @@ bootRun {
 }
 
 bootJar{
+
+	manifest {
+		   		attributes 'Main-Class': "org.springframework.boot.loader.JarLauncher"
+		        attributes 'Start-Class': 'env_easy_setup.ExecEasySetup'
+		    }	
     def envName = getRuntimeEnvironment();
 
     println '[INFO] Reset jar file name'
 
-    if("dev"=="${envName}"){
-        archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}-SNAPSHOT.${archiveExtension.get()}"
-    } else{
+       	println ">>>  else"
+    
         archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}-START.${archiveExtension.get()}"
 
         println '[INFO] Exclude resource, jar and main class file'
     
 	    // 排除 resource 相關設定檔、dependencies 相關 jar file、main class 程式檔案
-	    //rootSpec.exclude("/dozer", "/filter", "/i18n", "/logging", "/persistence", "/scripts", "/mailtemplate", '**.yml', '**.conf', "*.jar", "/tw","/noticeitemtemplate")
-	    
-	    // 設定 Start jar 放置目錄
-	    destinationDirectory = file("$buildDir/libs/lib")	
-    }
-}
-
-jar {
-    //archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}-RELEASE.${archiveExtension.get()}"
-
-	manifest {
-	   		attributes 'Main-Class': "org.springframework.boot.loader.JarLauncher"
-	        attributes 'Start-Class': 'env.easy.setup.env_easy_setup.AppsConfiguration.Main'
-	    }
-	    		// Main Class pull out to BOOT-INF dir
-
-        println '[INFO] Exclude resource, jar file'
-	    // 排除 resource 相關設定檔、dependencies 相關 jar file
-	  //  rootSpec.exclude("/dozer", "/filter", "/i18n", "/logging", "/persistence", "/scripts","/mailtemplate",'**.conf')
-	    
-	    println '[INFO] Copy lib jar file'
-	    // 將 dependencies jar file 複製至指定路徑
+//	    rootSpec.exclude("/dozer", "/filter", "/i18n", "/logging", "/persistence", "/scripts", "/mailtemplate", '**.yml', '**.conf', "*.jar", "/tw","/noticeitemtemplate","/shell_dir")
+	    	    // 將 dependencies jar file 複製至指定路徑
 	    compileJava.dependsOn('copyLib')
 	    
 	    println '[INFO] Copy resource file'
 	    // 將 Resource file 複製至指定路徑
 	    compileJava.dependsOn('copySource')
+	    // 設定 Start jar 放置目錄
+	    destinationDirectory = file("$buildDir/libs/lib")	
+}
+/*
+jar {
+    archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}-RELEASE.${archiveExtension.get()}"
+
+
+	manifest {
+	   		attributes 'Main-Class': "org.springframework.boot.loader.JarLauncher"
+	        attributes 'Start-Class': 'env_easy_setup.ExecEasySetup'
+	    }
+	    		// Main Class pull out to BOOT-INF dir
+
+        println '[INFO] Exclude resource, jar file'
+	    // 排除 resource 相關設定檔、dependencies 相關 jar file
+//	    rootSpec.exclude("/dozer", "/filter", "/i18n", "/logging", "/persistence", "/scripts","/mailtemplate",'**.conf',"/shell_dir")
+	    
+	    println '[INFO] Copy lib jar file'
+	    // 將 dependencies jar file 複製至指定路徑
+//	    compileJava.dependsOn('copyLib')
+	    
+	    println '[INFO] Copy resource file'
+	    // 將 Resource file 複製至指定路徑
+//	    compileJava.dependsOn('copySource')
 	    
 	    // 設定 Relese jar 放置目錄
 	    destinationDirectory = file("$buildDir/libs/lib")
     
 }
+*/
 
 // Pull out lib from jar
 task copyLib(type: Copy) {

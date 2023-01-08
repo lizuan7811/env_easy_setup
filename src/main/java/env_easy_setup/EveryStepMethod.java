@@ -1,12 +1,17 @@
 package env_easy_setup;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,11 +30,15 @@ import java.util.stream.Stream;
 import org.apache.tika.utils.StreamGobbler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.ResourceUtils;
 
 import ch.qos.logback.core.util.FileUtil;
 import lombok.Data;
@@ -122,12 +131,18 @@ public class EveryStepMethod {
 		List<String> copiedItemsList = selectedItemsList;
 		itemsPathMap=new HashMap<String,String>();
 		try {
-			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-			Stream<Path> fileStream = Files.list(Paths.get(resolver.getResource("classpath:shell_dir/").getURI()).toAbsolutePath());
+//			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+//			Resource resour=resolver.getResource("classpath:./config/shell_dir/");
+			
+			Path paths=Paths.get("./config/shell_dir/");
+			
+			Stream<Path> fileStream = Files.list(paths.toAbsolutePath());
+			
 			fileStream.forEach(path -> {
 				String fileName = path.toFile().getName();
 				String fileAbsolutePath=path.toFile().getAbsolutePath();
 				String cutedFileName = fileName.substring(0, fileName.indexOf('-'));
+				
 				if (copiedItemsList.contains(cutedFileName)) {
 					itemsPathMap.put(cutedFileName, path.toString());
 					copiedItemsList.remove(cutedFileName);
@@ -188,9 +203,9 @@ public class EveryStepMethod {
 		try {
 //			Linux's cmd behind:
 //			ProcessBuilder processBuild = new ProcessBuilder("chmod", "+x ",abPath);
-			
+			ProcessBuilder processBuild = new ProcessBuilder("cat", abPath);
 //			Windows's cmd behind:
-			ProcessBuilder processBuild = new ProcessBuilder("cmd","/C","more", abPath);
+//			ProcessBuilder processBuild = new ProcessBuilder("cmd","/C","more", abPath);
 			
 			Process process = processBuild.start();
 			process.waitFor();
