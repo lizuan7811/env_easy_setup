@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -22,6 +25,9 @@ import java.util.stream.Stream;
 import org.apache.tika.utils.StreamGobbler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
@@ -114,21 +120,22 @@ public class EveryStepMethod {
 	 */
 	private boolean validFileExist(List<String> selectedItemsList) {
 		List<String> copiedItemsList = selectedItemsList;
+		itemsPathMap=new HashMap<String,String>();
 		try {
-			Stream<Path> fileStream = Files.list(Paths.get("src/main/resources/shell_dir"));
-
+			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+			Stream<Path> fileStream = Files.list(Paths.get(resolver.getResource("classpath:shell_dir/").getURI()).toAbsolutePath());
 			fileStream.forEach(path -> {
 				String fileName = path.toFile().getName();
+				String fileAbsolutePath=path.toFile().getAbsolutePath();
 				String cutedFileName = fileName.substring(0, fileName.indexOf('-'));
 				if (copiedItemsList.contains(cutedFileName)) {
 					itemsPathMap.put(cutedFileName, path.toString());
 					copiedItemsList.remove(cutedFileName);
 				}
-
-				setExecAuth(path);
-
+				setAndStartShell(fileAbsolutePath);
 			});
 			fileStream.close();
+
 //		迭代查看是否找到不存在的檔案並印出
 			copiedItemsList.stream().forEach(opt -> {
 				System.out.println("#*********File is not Exist**********#");
@@ -140,18 +147,22 @@ public class EveryStepMethod {
 				});
 				System.out.println("#************************************#");
 			});
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException  e) {
 			e.printStackTrace();
 		}
 		return copiedItemsList.isEmpty();
 	}
 
+	/**
+	 * 執行蒐集到的Shell Sript
+	 */
 	private void execShellScript(List<String> selectedItems) {
 		System.out.println(">>>>>>start execShellScript!");
 
 //		根據list中的項目執行相對應的shell script。
 		assert (itemsPathMap.size() > 0);
+		
+//		selectedItems.stream().filter(shell->shell.)
 		setup(new IBaseConfig() {
 			@Override
 			public Boolean getSelect() {
@@ -165,12 +176,22 @@ public class EveryStepMethod {
 	}
 
 	private void setup(IBaseConfig ibaseConfig) {
+		
+		
 
 	}
 
-	private void setExecAuth(Path shellPath) {
+	/**
+	 * 設定shell script檔案的執行權限
+	 */
+	private void setAndStartShell(String abPath) {
 		try {
-			ProcessBuilder processBuild = new ProcessBuilder("chmod", "+x", shellPath.toString());
+//			Linux's cmd behind:
+//			ProcessBuilder processBuild = new ProcessBuilder("chmod", "+x ",abPath);
+			
+//			Windows's cmd behind:
+			ProcessBuilder processBuild = new ProcessBuilder("cmd","/C","more", abPath);
+			
 			Process process = processBuild.start();
 			process.waitFor();
 			printResult(process);

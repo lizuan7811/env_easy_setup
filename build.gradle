@@ -1,5 +1,8 @@
 plugins {
    id 'java-library'
+   id 'application'
+   id 'io.spring.dependency-management' version '1.1.0'
+   id 'org.springframework.boot' version '2.6.9'
 }
 group='env.easy.setup'
 version = '0.0.1-SNAPSHOT'
@@ -8,9 +11,13 @@ repositories {
     mavenCentral()
 }
 
-
-
 dependencies {
+	// https://mvnrepository.com/artifact/io.spring.dependency-management/io.spring.dependency-management.gradle.plugin
+	implementation 'io.spring.dependency-management:io.spring.dependency-management.gradle.plugin:1.1.0'
+	
+	// https://mvnrepository.com/artifact/io.spring.dependency-management/io.spring.dependency-management.gradle.plugin
+	implementation group: 'io.spring.dependency-management', name: 'io.spring.dependency-management.gradle.plugin', version: '1.1.0', ext: 'pom'
+	
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
 	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.6.9'
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter
@@ -25,43 +32,149 @@ dependencies {
 	implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: '2.6.9'
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.6.9'
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version: '2.6.9', ext: 'pom'
 
 	// https://mvnrepository.com/artifact/org.projectlombok/lombok
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
-
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
     api 'org.apache.commons:commons-math3:3.6.1'
     
 	// https://mvnrepository.com/artifact/org.apache.tika/tika-core
 	implementation group: 'org.apache.tika', name: 'tika-core', version: '2.6.0'
-
-
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter
-//	implementation group: 'org.springframework.boot', name: 'spring-boot-starter', version: '3.0.0'
 	
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools
-//	implementation group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '3.0.0'
+	implementation fileTree(dir: 'libs', include: ['*.jar'])
 	
+	 implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24' 
 	
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor
-//	implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '3.0.0'
+}
+compileJava.dependsOn('clearDist')
+test.enabled = false
+ext.getTaskName = { ->
+	return project.gradle.startParameter.taskNames[0]? project.gradle.startParameter.taskNames[0] : ''
+}
+task clearDist() {
+	delete "$buildDir/libs"
+}
+tasks.withType(JavaCompile){
+	options.encoding="UTF-8"
+}
+
+def envList = []
+
+fileTree("src/main/resources") {
+    include "application*.yml"
+}.each { file ->
+    def propertyName = file.name
+    print propertyName
+    String envName = propertyName.substring(0, propertyName.lastIndexOf(".yml"))
+    envList.add('-'+envName)
+    task "build_dev"(dependsOn : ['build']) {
+        group = 'build'
+        description = "Assembles and tests this project for dev"
+    }
+    task "bootRun_dev"(dependsOn : ['bootRun']) {
+        group = 'application'
+        description = "Runs this project as a Spring Boot application for dev"
+    }
+}
+
+ext.getTaskName = { ->
+	println "project.gradle.startParameter.taskNames[0]\t"+project.gradle.startParameter.taskNames[0]
 	
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test
-//	testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.0.0'
+	return project.gradle.startParameter.taskNames[0]? project.gradle.startParameter.taskNames[0] : ''
+}
 
-	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
-//	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.0.0'
+ext.getRuntimeEnvironment = { ->
+    	def envName = ''
+		def taskName = getTaskName()
+		return envName
+}
+bootRun {
+	def envName = getRuntimeEnvironment()
+	/*applicationDefaultJvmArgs = [
+		"-Dspring.profiles.active=dev",
+		"-Dspring.config.additional-location=classpath:platconf/application.yml"]
+		args = ["skipStartupError=true"]*/
+}
 
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
+bootJar{
+    def envName = getRuntimeEnvironment();
 
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-//    implementation 'com.google.guava:guava:28.0-jre'
+    println '[INFO] Reset jar file name'
 
-    // Use JUnit test framework
-//    testImplementation 'junit:junit:4.12'    
-//    implementation 'org.springframework.boot:spring-boot-starter'
-//    compileOnly 'org.projectlombok:lombok'
-//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-//    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-//    annotationProcessor 'org.projectlombok:lombok'
-//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    if("dev"=="${envName}"){
+        archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}-SNAPSHOT.${archiveExtension.get()}"
+    } else{
+        archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}-START.${archiveExtension.get()}"
+
+        println '[INFO] Exclude resource, jar and main class file'
+    
+	    // 排除 resource 相關設定檔、dependencies 相關 jar file、main class 程式檔案
+	    //rootSpec.exclude("/dozer", "/filter", "/i18n", "/logging", "/persistence", "/scripts", "/mailtemplate", '**.yml', '**.conf', "*.jar", "/tw","/noticeitemtemplate")
+	    
+	    // 設定 Start jar 放置目錄
+	    destinationDirectory = file("$buildDir/libs/lib")	
+    }
+}
+
+jar {
+    //archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}-RELEASE.${archiveExtension.get()}"
+
+	manifest {
+	   		attributes 'Main-Class': "org.springframework.boot.loader.JarLauncher"
+	        attributes 'Start-Class': 'env.easy.setup.env_easy_setup.AppsConfiguration.Main'
+	    }
+	    		// Main Class pull out to BOOT-INF dir
+
+        println '[INFO] Exclude resource, jar file'
+	    // 排除 resource 相關設定檔、dependencies 相關 jar file
+	  //  rootSpec.exclude("/dozer", "/filter", "/i18n", "/logging", "/persistence", "/scripts","/mailtemplate",'**.conf')
+	    
+	    println '[INFO] Copy lib jar file'
+	    // 將 dependencies jar file 複製至指定路徑
+	    compileJava.dependsOn('copyLib')
+	    
+	    println '[INFO] Copy resource file'
+	    // 將 Resource file 複製至指定路徑
+	    compileJava.dependsOn('copySource')
+	    
+	    // 設定 Relese jar 放置目錄
+	    destinationDirectory = file("$buildDir/libs/lib")
+    
+}
+
+// Pull out lib from jar
+task copyLib(type: Copy) {
+	// set lib path in jar
+    from configurations.compileClasspath
+    into "$buildDir/libs/lib"
+}
+
+task copySource(type: Copy){
+
+	def envName = getRuntimeEnvironment();
+	def envArr = envList
+	def index = envArr.indexOf('-'+envName)
+	if(index>=0){
+		envArr.remove(index)
+	}
+	
+	println ">>> exclude enviroment list: ${envArr}"
+	
+	from("src/main/resources"){
+		eachFile{f -> 
+			def propertyName = f.name
+			if(envArr.any{propertyName.contains(it)}) {
+	    		f.exclude()
+			}
+		}
+	}
+	into "$buildDir/libs/config"
+}
+
+application {
+    applicationDefaultJvmArgs = ['-Xmx512m', '-XX:MaxPermSize=512m', '-Dinm.testmode=true', '-Dfile.encoding=UTF-8', '-Xdebug','-Xrunjdwp:transport=dt_socket,server=y,address=7979,suspend=n']
+	/*args = ["skipStartupError=true"]*/
 }
