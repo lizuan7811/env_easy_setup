@@ -45,19 +45,44 @@ tls-config:
     key-model:
       - name: elasticsearch
         type: PKCS12
-        subject:
+        ca-name: elasticsearch-ca
+        server-name: elasticsearch-server
+        client-name: elasticsearch-client
+        store-name: elasticsearch
+        validity-day: 3650
+        subject: ""
       - name: kibana
         type: cert
-        subject:
+        ca-name: kibana-ca
+        server-name: kibana-server
+        client-name: kibana-client
+        store-name: kibana
+        validity-day: 3650
+        subject: ""
       - name: harbor
         type: cert
-        subject:
+        ca-name: harbor-ca
+        server-name: harbor-server
+        client-name: harbor-client
+        store-name: harbor
+        validity-day: 3650
+        subject: ""
       - name: kafka
         type: JKS
-        subject:
+        ca-name: kafka-ca
+        server-name: kafka-server
+        client-name: kafka-client
+        store-name: kafka
+        validity-day: 3650
+        subject: ""
       - name: filebeat
         type: cert
-        subject:
+        ca-name: filebeat-ca
+        server-name: filebeat-server
+        client-name: filebeat-client
+        store-name: filebeat
+        validity-day: 3650
+        subject: ""
   
    
     

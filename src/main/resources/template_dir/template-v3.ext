@@ -1,0 +1,19 @@
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+[alt_names]
+DNS.1=k8s1
+DNS.2=k8s2
+DNS.3=k8s3
+DNS.4=kafka1
+DNS.5=kafka2
+DNS.6=kafka3
+IP.1 =172.168.113.108
+IP.2 =172.168.113.109
+IP.3 =172.168.113.110
+IP.4 =172.168.113.111
+IP.5 =172.168.113.112
+IP.6 =172.168.113.113
+IP.7 =127.0.0.1

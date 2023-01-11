@@ -1,11 +1,15 @@
 package env_easy_setup;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -24,9 +28,12 @@ import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.text.StringSubstitutor;
 import org.apache.tika.utils.StreamGobbler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -131,23 +138,24 @@ public class EveryStepMethod {
 		List<String> copiedItemsList = selectedItemsList;
 		itemsPathMap=new HashMap<String,String>();
 		try {
-//			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-//			Resource resour=resolver.getResource("classpath:./config/shell_dir/");
+			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+			Resource resour=resolver.getResource("classpath:shell_dir/");
+			Path paths=Paths.get(resour.getURI());
 			
-			Path paths=Paths.get("./config/shell_dir/");
+//			Path paths=Paths.get("./config/shell_dir/");
 			
 			Stream<Path> fileStream = Files.list(paths.toAbsolutePath());
 			
 			fileStream.forEach(path -> {
 				String fileName = path.toFile().getName();
-				String fileAbsolutePath=path.toFile().getAbsolutePath();
+//				String fileAbsolutePath=path.toFile().getAbsolutePath();
 				String cutedFileName = fileName.substring(0, fileName.indexOf('-'));
 				
 				if (copiedItemsList.contains(cutedFileName)) {
 					itemsPathMap.put(cutedFileName, path.toString());
 					copiedItemsList.remove(cutedFileName);
 				}
-				setAndStartShell(fileAbsolutePath);
+//				setAndStartShell(fileAbsolutePath);
 			});
 			fileStream.close();
 
@@ -168,6 +176,61 @@ public class EveryStepMethod {
 		return copiedItemsList.isEmpty();
 	}
 
+	
+	private void buildKeyInitFile() {
+		
+//		讀template
+//		讀config
+//		渲染Template
+		BufferedReader bReader=new BufferedReader(new InputStreamReader(null));
+		BufferedWriter bWriter=new BufferedWriter(new OutputStreamWriter(null));
+		
+		
+		
+		
+		
+	}
+	
+	
+	private static void tempToKeyShell(Map<String,String> params) {
+		
+		processTemplate("classpath:template_dir/template-key.sh",params);
+	}
+	
+	/**
+	 * 渲染模板
+	 */
+	private static void processTemplate(String templatePath,Map<String,String> params) {
+		
+		StringSubstitutor stringSubstitutor=new StringSubstitutor(params);
+		StringBuffer sb=new StringBuffer();
+		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		Resource resour=resolver.getResource(templatePath);
+		
+		try(BufferedReader br=Files.newBufferedReader(Paths.get(resour.getFile().getAbsolutePath()));
+			BufferedWriter bw=Files.newBufferedWriter(Paths.get(""));){
+			
+			br.lines().forEach(str->{
+				try {
+					bw.write(stringSubstitutor.replace(templatePath));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			});
+			
+		}catch(Exception e){
+			
+			
+		}
+		finally {
+			
+		}
+		
+		
+		 
+	}
+	
+	
 	/**
 	 * 執行蒐集到的Shell Sript
 	 */
