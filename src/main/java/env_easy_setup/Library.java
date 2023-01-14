@@ -3,10 +3,11 @@
  */
 package env_easy_setup;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import env_easy_setup.Model.Docker;
 
 @Component
 public class Library {
@@ -16,6 +17,18 @@ public class Library {
 	private EveryStepMethod everyStepMethod;
 	
     public void printFields() {
-    	everyStepMethod.initSysInfo();
+    	Map<String,String> params=new HashMap<String,String>();
+    	
+    	params.put("HARBOR_CA_NAME", "harbor_ca_name");
+    	
+    	params.put("HARBOR_SERVER", "harbor_server");
+
+    	
+    	
+    	
+    	everyStepMethod.tempToKeyShell(params);
+//    	everyStepMethod.initSysInfo();
+    	
+    	
     }
 }

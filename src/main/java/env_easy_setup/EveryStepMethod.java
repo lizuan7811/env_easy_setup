@@ -13,12 +13,14 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -192,42 +194,45 @@ public class EveryStepMethod {
 	}
 	
 	
-	private static void tempToKeyShell(Map<String,String> params) {
-		
-		processTemplate("classpath:template_dir/template-key.sh",params);
+	public void tempToKeyShell(Map<String,String> params) {
+		processTemplate("classpath:template_dir/template-key-init.sh",params);
 	}
 	
 	/**
 	 * 渲染模板
 	 */
 	private static void processTemplate(String templatePath,Map<String,String> params) {
-		
 		StringSubstitutor stringSubstitutor=new StringSubstitutor(params);
 		StringBuffer sb=new StringBuffer();
 		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+		Resource baseResour=resolver.getResource("classpath:");
+		try {
+			String baseSourceDirURI=baseResour.getFile().getAbsolutePath();
+			System.out.println(baseSourceDirURI);
 		Resource resour=resolver.getResource(templatePath);
-		
 		try(BufferedReader br=Files.newBufferedReader(Paths.get(resour.getFile().getAbsolutePath()));
-			BufferedWriter bw=Files.newBufferedWriter(Paths.get(""));){
-			
+			BufferedWriter bw=Files.newBufferedWriter(Paths.get(baseSourceDirURI+"/output_dir/key-init1.sh"),StandardOpenOption.CREATE_NEW);){
+			System.out.println(Paths.get(baseSourceDirURI+"/output_dir/key-init1.sh"));
 			br.lines().forEach(str->{
 				try {
-					bw.write(stringSubstitutor.replace(templatePath));
+					System.out.println(str);
+					System.out.println(stringSubstitutor.replace(str));
+					bw.write(stringSubstitutor.replace(str));
+					bw.flush();
+					bw.newLine();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			});
-			
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		}catch(Exception e){
-			
-			
+			e.printStackTrace();
 		}
 		finally {
-			
+			System.out.println("結束!");
 		}
-		
-		
-		 
 	}
 	
 	

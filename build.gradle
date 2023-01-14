@@ -34,6 +34,10 @@ dependencies {
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.6.9'
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-parent', version: '2.6.9', ext: 'pom'
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-text
+	implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
 
 	// https://mvnrepository.com/artifact/org.projectlombok/lombok
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
