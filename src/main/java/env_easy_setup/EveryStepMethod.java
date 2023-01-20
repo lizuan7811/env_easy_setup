@@ -1,26 +1,15 @@
 package env_easy_setup;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,42 +17,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.text.StringSubstitutor;
-import org.apache.tika.utils.StreamGobbler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.util.ResourceUtils;
 
-import ch.qos.logback.core.util.FileUtil;
-import env_easy_setup.Model.KeyStringConfiguration;
 import env_easy_setup.Model.TlsConfig;
 import lombok.Data;
-//讀取要執行的資料
-
-//將必要安裝的參數先蒐集起來。
-//檢查資料是否存在
-//初始化
-//Docker
-//Harbor
-//RKE2
-//Rancher
-//KAFKA
 @Data
 @Configuration
 public class EveryStepMethod {
@@ -72,6 +34,8 @@ public class EveryStepMethod {
 	private final TlsConfig tlsConfig;
 	
 	private final InitUtils initUtils;
+	
+	private List<String> errorCollectList=new ArrayList<String>();
 	
 	@Autowired
 	public EveryStepMethod(AppsConfiguration appsConfiguration,TlsConfig tlsConfig,InitUtils initUtils) {
@@ -98,29 +62,31 @@ public class EveryStepMethod {
 	 * 開始安裝程式
 	 */
 	public void startSetup() {
-//		查目前系統資源參數
-		if (initSysInfo()) {
-//			sysinfo-init.sh 初始化系統 執行
+		
+//		初始化sys前，先確認是否使用tls
+		if(tlsConfig.getEncryptConn()) {
+			this.selectedItems.add("key-init");
+		}
+		
+//		初始化系統參數並開啟防火牆。
+		if (initSysInfo() ) {
+			System.out.printf("Start to execute shells!");
+			assert (itemsPathMap.size() > 0);
 			
-//			firewallcmd-init.sh 防火牆設定
-			
-//			docker-init.sh 安裝
-
-//			harbor-init.sh 安裝
-
-//			rke2-init.sh 安裝rke2
-			
-//			rancher-init.sh 安裝k3s+rancher
-			
-//			kafka-init.sh 安裝kafka
-
-//			filebeat-init.sh 安裝
-
-//			elasticsearch-init.sh 安裝
-			
-//			kibana.sh 安裝
-			
-			execShellScript(this.selectedItems);
+			this.selectedItems.stream().forEach(obj->{
+//				sysinfo-init.sh 初始化系統 執行
+//				firewallcmd-init.sh 防火牆設定
+//				docker-init.sh 安裝
+//				harbor-init.sh 安裝
+//				rke2-init.sh 安裝rke2
+//				rancher-init.sh 安裝k3s+rancher
+//				kafka-init.sh 安裝kafka
+//				filebeat-init.sh 安裝
+//				elasticsearch-init.sh 安裝
+//				kibana.sh 安裝
+				execShellScript(obj);
+			});
+			System.out.printf("Finished execute shells!");
 		}
 	}
 
@@ -189,10 +155,11 @@ public class EveryStepMethod {
 				String cutedFileName = fileName.substring(0, fileName.indexOf('-'));
 				
 				if (copiedItemsList.contains(cutedFileName)) {
+//					*-*.sh
 					itemsPathMap.put(cutedFileName, path.toString());
 					copiedItemsList.remove(cutedFileName);
 				}
-				setAndStartShell(Arrays.asList("chmod","+x",fileAbsolutePath));
+				setShellFileAuth(Arrays.asList("chmod","+x",fileAbsolutePath));
 			});
 			fileStream.close();
 
@@ -213,54 +180,50 @@ public class EveryStepMethod {
 		return copiedItemsList.isEmpty();
 	}
 
-	
-	private void buildKeyInitFile() {
-		
-//		讀template
-//		讀config
-//		渲染Template
-		BufferedReader bReader=new BufferedReader(new InputStreamReader(null));
-		BufferedWriter bWriter=new BufferedWriter(new OutputStreamWriter(null));
-		
-	}
+//	private boolean validElementEffect(List<String>copiedItemsList) {
+//		
+////		docker + harbor
+////		k3s+rancher
+////		kibana+elasticsearch
+//		
+//		
+//		return false;
+//	}
+//	private void buildKeyInitFile() {
+//		
+//		BufferedReader bReader=new BufferedReader(new InputStreamReader(null));
+//		BufferedWriter bWriter=new BufferedWriter(new OutputStreamWriter(null));
+//		
+//	}
 	
 	/**
 	 * 執行蒐集到的Shell Sript
 	 */
-	private void execShellScript(List<String> selectedItems) {
-		System.out.println(">>>>>>start execShellScript!");
-
-//		根據list中的項目執行相對應的shell script。
-		assert (itemsPathMap.size() > 0);
-		
-//		selectedItems.stream().filter(shell->shell.)
-		setup(new IBaseConfig() {
+	private void execShellScript(String element) {
+//		element為初始化蒐集到的需要執行的項目，依順序執行。
+		System.out.printf("Execute %s shell!\n",element);
+		this.<String>workShell(element,new Consumer<String>() {
 			@Override
-			public Boolean getSelect() {
-				// TODO Auto-generated method stub
-				return null;
+			public void accept(String consumeElement) {
+				processBuilder(itemsPathMap.get(consumeElement));
 			}
 		});
-//		初始化系統
-//		安裝Docker指令
-//		安裝RKE2指令
 	}
 
-	private void setup(IBaseConfig ibaseConfig) {
+	private <T>void workShell(String element,Consumer<T> consumeElement) {
+//		可以在這裡針對不同的檔案做不同的處理。
 		
-		
-
+		consumeElement.accept((T)element);
 	}
 
 	/**
-	 * 設定shell script檔案的執行權限
+	 * 設定選擇的 shell檔案執行權限
 	 */
-	private void setAndStartShell(List<String> commandList) {
+	private void setShellFileAuth(List<String> commandList) {
 		try {
-//			Windows's cmd behind:
-//			ProcessBuilder processBuild = new ProcessBuilder("cmd","/C","more", abPath);
-//			Linux's cmd behind:
+//			Linux's cmd behind: chmod +x ${file}
 			ProcessBuilder processBuild = new ProcessBuilder();
+			processBuild.command(commandList);
 			Process chmodProcess = processBuild.start();
 			chmodProcess.waitFor();
 			printResult(chmodProcess);
@@ -271,30 +234,35 @@ public class EveryStepMethod {
 
 
 	/**
-	 * 執行Shell Script
+	 * 執行單個Shell Script
 	 */
-	private void processBuilder(Path shellPath) {
+	private void processBuilder(String shellPath) {
 		try {
-			ProcessBuilder processBuild = new ProcessBuilder(String.format("./%s", shellPath.toFile().getName()));
+			ProcessBuilder processBuild = new ProcessBuilder(shellPath);
 			Process process = processBuild.start();
 			process.waitFor();
 			printResult(process);
-
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * 列印執行shell的結果
+	 */
 	private void printResult(Process process) {
 		try (Stream<String> brSuccess = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-8")).lines();
 				Stream<String> brError = new BufferedReader(new InputStreamReader(process.getErrorStream(), "UTF-8")).lines();) {
-//			List<String> brSuccess=new BufferedReader(new InputStreamReader(process.getInputStream(),"UTF-8")).lines().collect(Collectors.toList());
-//			List<String> brError=new BufferedReader(new InputStreamReader(process.getErrorStream(),"UTF-8")).lines().collect(Collectors.toList());
-			brSuccess.forEach(System.out::println);
-			brError.forEach(System.out::println);
+			if(Objects.nonNull(brSuccess)) {
+				System.out.println(">>> Execute shell : Successed!");
+				brSuccess.forEach(System.out::println);
+			}
+			if(Objects.nonNull(brSuccess)) {
+				System.out.println(">>> Execute shell : Error!");
+				brError.forEach(System.out::println);
+			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
 	}
-
 }

@@ -31,6 +31,9 @@ public class InitUtils {
 	@Autowired
 	private KeyStringConfiguration keyStringEnumeration;
 
+	/**
+	 * 取config中設定key的參數取出作初始化
+	 */
 	private Map<String, String> getParams() {
 		Map<String, String> paramsMap = new HashMap<String, String>();
 		Field[] fields = KeyStringConfiguration.class.getDeclaredFields();
@@ -48,6 +51,9 @@ public class InitUtils {
 		return paramsMap;
 	}
 
+	/**
+	 * 將模板key-init檔案做參數修改
+	 */
 	public void tempShellToKeyShell() {
 		tempShellToKeyShell(getParams());
 	}
@@ -59,7 +65,7 @@ public class InitUtils {
 	}
 
 	/**
-	 * 渲染Shell模板
+	 * 渲染key shell模板
 	 */
 	private static void processTemplate(String templatePath, Map<String, String> params) {
 		StringSubstitutor stringSubstitutor = new StringSubstitutor(params);

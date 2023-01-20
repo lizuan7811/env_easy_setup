@@ -1,6 +1,6 @@
 #!/bin/bash
 
-defaul_rpm_dir=rpm
+defaul_rpm_dir=rpm/docker_dir
 docker_pre_dir=docker_pre
 docker_dir=docker
 

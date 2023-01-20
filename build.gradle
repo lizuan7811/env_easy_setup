@@ -113,14 +113,12 @@ bootJar{
 
     println '[INFO] Reset jar file name'
 
-       	println ">>>  else"
-    
         archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}-START.${archiveExtension.get()}"
 
         println '[INFO] Exclude resource, jar and main class file'
     
 	    // 排除 resource 相關設定檔、dependencies 相關 jar file、main class 程式檔案
-//	    rootSpec.exclude("/dozer", "/filter", "/i18n", "/logging", "/persistence", "/scripts", "/mailtemplate", '**.yml', '**.conf', "*.jar", "/tw","/noticeitemtemplate","/shell_dir")
+	   // rootSpec.exclude('**.yml', '**.conf', "*.jar", "/shell_dir")
 	    	    // 將 dependencies jar file 複製至指定路徑
 	    compileJava.dependsOn('copyLib')
 	    
