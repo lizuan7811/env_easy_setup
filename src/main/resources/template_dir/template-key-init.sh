@@ -23,18 +23,18 @@ chmod 644 ${KAFKA_CA_NAME}.crt
 # keytool -genkey -alias test-key -keypass Admin@@@111 -keyalg RSA -keysize 4096 -validity 3650 -keystore test-key.keystore -storepass Admin@@@111 -dname 'C=TW,ST=Taiwan,L=Taiwan,O=Pershiung,OU=TDU,CN=172.168.113.110,CN=172.168.113.107,CN=172.168.113.108,CN=172.168.113.109,emailAddress=tnibmid@gmail.com'
 #將kafka-ca.crt加入至kafka.truststore.jks中
 keytool -keystore ${KAFKA_STORE_NAME}.truststore.jks -alias ${KAFKA_TRUSTSTORE_ALIAS} -import -file ${KAFKA_CA_NAME}.crt
-#產一個儲存在kafka1.keystore.jks中的Key(key輸出的副檔名為.crt)
-keytool -keystore ${KAFKA_STORE_NAME}.keystore.jks -alias ${KAFKA_KEYTSTORE_ALIAS} -validity ${VALIDITY_DAY} -genkey -keyalg RSA -ext SAN=DNS:DNS_NAME}}
-#將存在kafka1.keystore.jks中，alias為172.168.113.107的key輸出為kafka1.unsigned.crt(未經簽發)
-keytool -keystore kafka1.keystore.jks -alias 172.168.113.110 -certreq -file kafka1.unsigned.crt
+#產一個儲存在kafka.keystore.jks中的Key(key輸出的副檔名為.crt)
+keytool -keystore ${KAFKA_STORE_NAME}.keystore.jks -alias ${KAFKA_KEYSTORE_ALIAS} -validity ${VALIDITY_DAY} -genkey -keyalg RSA -ext SAN=DNS:${DNS_NAME}
+#將存在kafka.keystore.jks中，alias為172.168.113.107的key輸出為kafka.unsigned.crt(未經簽發)
+keytool -keystore ${KAFKA_STORE_NAME}.keystore.jks -alias ${KAFKA_KEYSTORE_ALIAS} -certreq -file kafka.unsigned.crt
 #簽發證書(會輸入有效期限)，將未經簽發的證書輸入執行簽發，並產出kafka.signed.crt
 openssl x509 -req -CA ${KAFKA_CA_NAME}.crt -CAkey ${KAFKA_CA_NAME}.key -in kafka.unsigned.crt -out kafka.signed.crt -days 3650 -CAcreateserial
 #將kafka-ca.crt匯入kafka.keystore.jks中，標記為CARoot的值。
-keytool -keystore ${KAFKA_STORE_NAME}.keystore.jks -alias ${KAFKA_KEYSTORE_ALIAS} -import -file ${KAFKA_CA_NAME}.crt
-#替換存在kafka1.keystore.jks中，儲存在alias為172.168.113.107的key，換為經簽發的kafka1.signed.crt證書
+keytool -keystore ${KAFKA_STORE_NAME}.keystore.jks -alias CARoot -import -file ${KAFKA_CA_NAME}.crt
+#替換存在kafka.keystore.jks中，儲存在alias為172.168.113.107的key，換為經簽發的kafka.signed.crt證書
 keytool -keystore ${KAFKA_STORE_NAME}.keystore.jks -alias ${KAFKA_KEYSTORE_ALIAS} -import -file kafka.signed.crt
-#若尚未將憑證傳給kafka1，可使用下列指令複製過去
-#scp kafka.truststore.jks kafka1.keystore.jks root@kafka
+#若尚未將憑證傳給kafka，可使用下列指令複製過去
+#scp kafka.truststore.jks kafka.keystore.jks root@kafka
 #'C=TW,ST=Taiwan,L=Taiwan,O=Pershiung,OU=TDU,CN=172.168.113.110,CN=172.168.113.107,CN=172.168.113.108,CN=172.168.113.109,emailAddress=tnibmid@gmail.com'
 echo '***********************Elasticsearch、Kibana***************************'
 #xpack.security.enabled: true

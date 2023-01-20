@@ -12,7 +12,7 @@ import lombok.Data;
 @ConfigurationProperties(prefix="tls-config")
 public class TlsConfig {
 
-	private String encryptConn;
+	private Boolean encryptConn;
 	
 	private List<KeyModel> keyModel;
 	

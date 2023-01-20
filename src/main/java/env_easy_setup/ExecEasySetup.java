@@ -14,8 +14,8 @@ public class ExecEasySetup {
 		SpringApplication sa=new SpringApplication(ExecEasySetup.class);
 		
         ConfigurableApplicationContext cac=sa.run(args);
-        Library cfu=cac.getBean(Library.class);
-        cfu.printFields();
+        EveryStepMethod cfu=cac.getBean(EveryStepMethod.class);
+        cfu.startSetup();
         cac.close();
 	}
 

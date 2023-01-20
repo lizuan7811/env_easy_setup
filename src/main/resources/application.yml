@@ -42,6 +42,8 @@ apps:
     rpm-path:
 tls-config:
     encrypt-conn: true
+    v3-filename: "v3.ext"
+    dns-name: "172.168.113.110"
     key-model:
       - name: elasticsearch
         type: PKCS12
@@ -49,40 +51,45 @@ tls-config:
         server-name: elasticsearch-server
         client-name: elasticsearch-client
         store-name: elasticsearch
-        validity-day: 3650
-        subject: ""
+        validity-day: "3650"
+        subject: "\"/C=TW/ST=Taiwan/L=Taiwan/O=Pershiung/OU=TDU/CN=172.168.113.110/CN=172.168.113.107/CN=172.168.113.108/CN=172.168.113.109/emailAddress=tnibmid@gmail.com\""
+        alias: "elasticsearch"
       - name: kibana
         type: cert
         ca-name: kibana-ca
         server-name: kibana-server
         client-name: kibana-client
         store-name: kibana
-        validity-day: 3650
-        subject: ""
+        validity-day: "3650"
+        subject: "\"/C=TW/ST=Taiwan/L=Taiwan/O=Pershiung/OU=TDU/CN=172.168.113.110/CN=172.168.113.107/CN=172.168.113.108/CN=172.168.113.109/emailAddress=tnibmid@gmail.com\""
+        alias: "kibana"
       - name: harbor
         type: cert
         ca-name: harbor-ca
         server-name: harbor-server
         client-name: harbor-client
         store-name: harbor
-        validity-day: 3650
-        subject: ""
+        validity-day: "3650"
+        subject: "\"/C=TW/ST=Taiwan/L=Taiwan/O=Pershiung/OU=TDU/CN=172.168.113.110/CN=172.168.113.107/CN=172.168.113.108/CN=172.168.113.109/emailAddress=tnibmid@gmail.com\""
+        alias: "harbor"
       - name: kafka
         type: JKS
         ca-name: kafka-ca
         server-name: kafka-server
         client-name: kafka-client
         store-name: kafka
-        validity-day: 3650
-        subject: ""
+        validity-day: "3650"
+        subject: "\"/C=TW/ST=Taiwan/L=Taiwan/O=Pershiung/OU=TDU/CN=172.168.113.110/CN=172.168.113.107/CN=172.168.113.108/CN=172.168.113.109/emailAddress=tnibmid@gmail.com\""
+        alias: "kafka"
       - name: filebeat
         type: cert
         ca-name: filebeat-ca
         server-name: filebeat-server
         client-name: filebeat-client
         store-name: filebeat
-        validity-day: 3650
-        subject: ""
+        validity-day: "3650"
+        subject: "\"/C=TW/ST=Taiwan/L=Taiwan/O=Pershiung/OU=TDU/CN=172.168.113.110/CN=172.168.113.107/CN=172.168.113.108/CN=172.168.113.109/emailAddress=tnibmid@gmail.com\""
+        alias: "filebeat"
   
    
     

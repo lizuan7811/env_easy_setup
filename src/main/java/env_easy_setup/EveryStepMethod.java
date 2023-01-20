@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,8 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ResourceUtils;
 
 import ch.qos.logback.core.util.FileUtil;
+import env_easy_setup.Model.KeyStringConfiguration;
+import env_easy_setup.Model.TlsConfig;
 import lombok.Data;
 //讀取要執行的資料
 
@@ -66,9 +69,15 @@ import lombok.Data;
 public class EveryStepMethod {
 	private final AppsConfiguration appsConfiguration;
 
+	private final TlsConfig tlsConfig;
+	
+	private final InitUtils initUtils;
+	
 	@Autowired
-	public EveryStepMethod(AppsConfiguration appsConfiguration) {
+	public EveryStepMethod(AppsConfiguration appsConfiguration,TlsConfig tlsConfig,InitUtils initUtils) {
 		this.appsConfiguration = appsConfiguration;
+		this.tlsConfig=tlsConfig;
+		this.initUtils=initUtils;
 	}
 
 	private List<String> selectedItems;
@@ -83,11 +92,34 @@ public class EveryStepMethod {
 
 	private Map<String, String> itemsPathMap;
 
+	private final static String userDirPath=System.getProperty("user.dir");
+	
 	/**
 	 * 開始安裝程式
 	 */
 	public void startSetup() {
+//		查目前系統資源參數
 		if (initSysInfo()) {
+//			sysinfo-init.sh 初始化系統 執行
+			
+//			firewallcmd-init.sh 防火牆設定
+			
+//			docker-init.sh 安裝
+
+//			harbor-init.sh 安裝
+
+//			rke2-init.sh 安裝rke2
+			
+//			rancher-init.sh 安裝k3s+rancher
+			
+//			kafka-init.sh 安裝kafka
+
+//			filebeat-init.sh 安裝
+
+//			elasticsearch-init.sh 安裝
+			
+//			kibana.sh 安裝
+			
 			execShellScript(this.selectedItems);
 		}
 	}
@@ -113,6 +145,11 @@ public class EveryStepMethod {
 	 * @return
 	 */
 	private List<String> getSelectedItems() {
+		
+		if(tlsConfig.getEncryptConn()) {
+			initUtils.tempShellToKeyShell();
+		}
+		
 		List<String> selectedItemsList = new ArrayList<String>();
 		Field[] fields = AppsConfiguration.class.getDeclaredFields();
 
@@ -140,24 +177,22 @@ public class EveryStepMethod {
 		List<String> copiedItemsList = selectedItemsList;
 		itemsPathMap=new HashMap<String,String>();
 		try {
-			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-			Resource resour=resolver.getResource("classpath:shell_dir/");
-			Path paths=Paths.get(resour.getURI());
-			
-//			Path paths=Paths.get("./config/shell_dir/");
-			
+//			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+//			Resource resour=resolver.getResource("classpath:shell_dir/");
+//			Path paths=Paths.get(resour.getURI());
+			Path paths=Paths.get(userDirPath+"/config/shell_dir/");
 			Stream<Path> fileStream = Files.list(paths.toAbsolutePath());
 			
 			fileStream.forEach(path -> {
 				String fileName = path.toFile().getName();
-//				String fileAbsolutePath=path.toFile().getAbsolutePath();
+				String fileAbsolutePath=path.toFile().getAbsolutePath();
 				String cutedFileName = fileName.substring(0, fileName.indexOf('-'));
 				
 				if (copiedItemsList.contains(cutedFileName)) {
 					itemsPathMap.put(cutedFileName, path.toString());
 					copiedItemsList.remove(cutedFileName);
 				}
-//				setAndStartShell(fileAbsolutePath);
+				setAndStartShell(Arrays.asList("chmod","+x",fileAbsolutePath));
 			});
 			fileStream.close();
 
@@ -187,54 +222,7 @@ public class EveryStepMethod {
 		BufferedReader bReader=new BufferedReader(new InputStreamReader(null));
 		BufferedWriter bWriter=new BufferedWriter(new OutputStreamWriter(null));
 		
-		
-		
-		
-		
 	}
-	
-	
-	public void tempToKeyShell(Map<String,String> params) {
-		processTemplate("classpath:template_dir/template-key-init.sh",params);
-	}
-	
-	/**
-	 * 渲染模板
-	 */
-	private static void processTemplate(String templatePath,Map<String,String> params) {
-		StringSubstitutor stringSubstitutor=new StringSubstitutor(params);
-		StringBuffer sb=new StringBuffer();
-		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-		Resource baseResour=resolver.getResource("classpath:");
-		try {
-			String baseSourceDirURI=baseResour.getFile().getAbsolutePath();
-			System.out.println(baseSourceDirURI);
-		Resource resour=resolver.getResource(templatePath);
-		try(BufferedReader br=Files.newBufferedReader(Paths.get(resour.getFile().getAbsolutePath()));
-			BufferedWriter bw=Files.newBufferedWriter(Paths.get(baseSourceDirURI+"/output_dir/key-init1.sh"),StandardOpenOption.CREATE_NEW);){
-			System.out.println(Paths.get(baseSourceDirURI+"/output_dir/key-init1.sh"));
-			br.lines().forEach(str->{
-				try {
-					System.out.println(str);
-					System.out.println(stringSubstitutor.replace(str));
-					bw.write(stringSubstitutor.replace(str));
-					bw.flush();
-					bw.newLine();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			});
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		finally {
-			System.out.println("結束!");
-		}
-	}
-	
 	
 	/**
 	 * 執行蒐集到的Shell Sript
@@ -267,17 +255,15 @@ public class EveryStepMethod {
 	/**
 	 * 設定shell script檔案的執行權限
 	 */
-	private void setAndStartShell(String abPath) {
+	private void setAndStartShell(List<String> commandList) {
 		try {
-//			Linux's cmd behind:
-//			ProcessBuilder processBuild = new ProcessBuilder("chmod", "+x ",abPath);
-			ProcessBuilder processBuild = new ProcessBuilder("cat", abPath);
 //			Windows's cmd behind:
 //			ProcessBuilder processBuild = new ProcessBuilder("cmd","/C","more", abPath);
-			
-			Process process = processBuild.start();
-			process.waitFor();
-			printResult(process);
+//			Linux's cmd behind:
+			ProcessBuilder processBuild = new ProcessBuilder();
+			Process chmodProcess = processBuild.start();
+			chmodProcess.waitFor();
+			printResult(chmodProcess);
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
