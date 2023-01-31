@@ -52,6 +52,10 @@ dependencies {
 	 implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24' 
 	
+	// https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on
+	implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
+
+
 }
 compileJava.dependsOn('clearDist')
 test.enabled = false

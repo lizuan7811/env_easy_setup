@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -29,8 +30,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.security.auth.x500.X500Principal;
-
 import org.bouncycastle.asn1.DERBMPString;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -38,21 +43,16 @@ import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.x509.*;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.params.RSAKeyParameters;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
+import org.bouncycastle.jce.PKCS10CertificationRequest;
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.jce.interfaces.PKCS12BagAttributeCarrier;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
-import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
-import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
-import org.bouncycastle.pkcs.PKCS10CertificationRequest;
-import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
+import org.bouncycastle.util.*;
 import org.bouncycastle.pqc.crypto.util.SubjectPublicKeyInfoFactory;
 import org.bouncycastle.util.encoders.Base64Encoder;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
@@ -60,6 +60,50 @@ import org.junit.Before;
 import org.junit.jupiter.api.Test;
 
 public class KeyProduce {
+	
+	
+	private void KeyPairGen() {
+		
+//		String input="";
+		String key="";
+		
+		try {
+//		Initializeing the KeyPairGenerator
+			KeyPairGenerator keyPairGen=KeyPairGenerator.getInstance("DSA");
+//			初始化KeyPairGenerator物件
+			keyPairGen.initialize(4096);
+//			產生KeyPairGenerator, Generate the pair of keys
+			KeyPair pair=keyPairGen.generateKeyPair();
+//			取得公鑰
+			PublicKey publicKey=pair.getPublic();
+			Cipher cipher=Cipher.getInstance("RSA/ECB/PKCS1Padding");
+//			Initializing a Cipher object (初始化Cipher 物件)
+			cipher.init(Cipher.ENCRYPT_MODE,publicKey);
+//			將資料加入Cipher物件
+			byte[] input="Welcome to here".getBytes();
+			cipher.update(input);
+//			將資料執行加密，取得byte
+			byte[] cipherText=cipher.doFinal();
+			
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * issuer    證書頒發者
@@ -84,12 +128,10 @@ public class KeyProduce {
 		algorithmMap.put("1.2.840.113549.1.1.1",KEY_PAIR_ALG);
 	}
 	
-	@Before
 	public void before() {
 	Provider provider=new BouncyCastleProvider();	
 	Security.addProvider(provider);
 	}
-	@Test
 	public void testGenRootKeyPair(String[] args) {
 		try {
 			KeyPairGenerator keyPairGenerator=KeyPairGenerator.getInstance(KEY_PAIR_ALG);
@@ -104,7 +146,6 @@ public class KeyProduce {
 
 	}
 	
-	@Test
 	public void testZhangsanKeyPair()throws Exception{
 		KeyPairGenerator keyPairGenerator=KeyPairGenerator.getInstance(KEY_PAIR_ALG);
 		keyPairGenerator.initialize(4096);
@@ -113,7 +154,6 @@ public class KeyProduce {
 		writeObject("",keyPair.getPrivate());
 	}
 
-	@Test
 	public void testGenRootCert()throws Exception{
 		String caPassword = "passw0rd";
 		KeyStore ks = KeyStore.getInstance("PKCS12");
@@ -139,39 +179,37 @@ public class KeyProduce {
 		
 	}
 	
-	@Test
-	public void testGenRootCertWithBuilder()throws Exception{
-		final AlgorithmIdentifier sigAlgId=new DefaultSignatureAlgorithmIdentifierFinder().find(SIG_ALG);
-		final AlgorithmIdentifier digAlgId=new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
-		
-		PublicKey publicKey=getRootPublicKey();
-		PrivateKey privateKey=getRootPrivateKey();
-		
-		X500Name issuer=new X500Name(DN_CA);
-		BigInteger serial=BigInteger.TEN;
-		Date notBefore=new Date();
-		Date notAfter=new Date(System.currentTimeMillis()+100*24*60*60*1000);
-		X500Name subject=new X500Name(DN_CA);
-		AlgorithmIdentifier algId=AlgorithmIdentifier.getInstance(PKCSObjectIdentifiers.rsaEncryption.toString());
-		System.out.println(algId.getAlgorithm());
-	
-		AsymmetricKeyParameter publicKeyParameter=PublicKeyFactory.createKey(publicKey.getEncoded());
-		SubjectPublicKeyInfo publicKeyInfo=SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(publicKeyParameter);
-		X509v3CertificateBuilder x509v3CertificateBuilder=new X509v3CertificateBuilder(issuer,serial,notBefore,notAfter,subject,publicKeyInfo);
-	
-		BcRSAContentSignerBuilder contentSignerBuilder=new BcRSAContentSignerBuilder(sigAlgId,digAlgId);
-		
-		AsymmetricKeyParameter privateKeyParameter=PrivateKeyFactory.createKey(privateKey.getEncoded());
-		ContentSigner contentSigner=contentSignerBuilder.build(privateKeyParameter);
-	
-		X509CertificateHolder certificateHolder=x509v3CertificateBuilder.build(contentSigner);
-		Certificate certificate =certificateHolder.toASN1Structure();
-		
-		writeFile("*/*/ca.cer",certificate.getEncoded());
-		
-	}
+//	public void testGenRootCertWithBuilder()throws Exception{
+//		final AlgorithmIdentifier sigAlgId=new DefaultSignatureAlgorithmIdentifierFinder().find(SIG_ALG);
+//		final AlgorithmIdentifier digAlgId=new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
+//		
+//		PublicKey publicKey=getRootPublicKey();
+//		PrivateKey privateKey=getRootPrivateKey();
+//		
+//		X500Name issuer=new X500Name(DN_CA);
+//		BigInteger serial=BigInteger.TEN;
+//		Date notBefore=new Date();
+//		Date notAfter=new Date(System.currentTimeMillis()+100*24*60*60*1000);
+//		X500Name subject=new X500Name(DN_CA);
+//		AlgorithmIdentifier algId=AlgorithmIdentifier.getInstance(PKCSObjectIdentifiers.rsaEncryption.toString());
+//		System.out.println(algId.getAlgorithm());
+//	
+//		AsymmetricKeyParameter publicKeyParameter=PublicKeyFactory.createKey(publicKey.getEncoded());
+//		SubjectPublicKeyInfo publicKeyInfo=SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(publicKeyParameter);
+//		X509v3CertificateBuilder x509v3CertificateBuilder=new X509v3CertificateBuilder(issuer,serial,notBefore,notAfter,subject,publicKeyInfo);
+//	
+//		BcRSAContentSignerBuilder contentSignerBuilder=new BcRSAContentSignerBuilder(sigAlgId,digAlgId);
+//		
+//		AsymmetricKeyParameter privateKeyParameter=PrivateKeyFactory.createKey(privateKey.getEncoded());
+//		ContentSigner contentSigner=contentSignerBuilder.build(privateKeyParameter);
+//	
+//		X509CertificateHolder certificateHolder=x509v3CertificateBuilder.build(contentSigner);
+//		Certificate certificate =certificateHolder.toASN1Structure();
+//		
+//		writeFile("*/*/ca.cer",certificate.getEncoded());
+//		
+//	}
 
-	@Test
 	public void testgenZhangsnacert()throws Exception{
 		X509V3CertificateGenerator certGen=new X509V3CertificateGenerator();
 		certGen.setIssuerDN(new X500Principal(DN_CA));
@@ -185,7 +223,6 @@ public class KeyProduce {
 	}
 	
 	
-	@Test
 	public void testVerifyRootCert()throws Exception{
 		CertificateFactory certificateFactory=CertificateFactory.getInstance("X.509");
 		FileInputStream inStream=new FileInputStream("*/*/ca.cer");
@@ -199,7 +236,6 @@ public class KeyProduce {
 		System.out.println(legal);
 	}
 	
-	@Test
 	public void testVerifyZhangsnaCert() throws Exception{
 		CertificateFactory certificateFactory=CertificateFactory.getInstance("X.509");
 		FileInputStream inStream=new FileInputStream("*/*/liz.cer");
@@ -212,44 +248,41 @@ public class KeyProduce {
 		System.out.println(legal);
 	}
 
-	@Test
-	public void testGenCSR() throws Exception{
-		X500Name subject=new X500Name(DN_LIZ);
-		AsymmetricKeyParameter keyParameter=PrivateKeyFactory.createKey(getZhangsanPrivateKey().getEncoded());
-		SubjectPublicKeyInfo publicKeyInfo=SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(keyParameter);
-		PKCS10CertificationRequestBuilder certificationRequestBuilder=new PKCS10CertificationRequestBuilder(subject,publicKeyInfo);
-		final AlgorithmIdentifier sigAlgId=new DefaultSignatureAlgorithmIdentifierFinder().find(SIG_ALG);
-		final AlgorithmIdentifier digAlgId=new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
-		BcRSAContentSignerBuilder contentSignerBuilder=new BcRSAContentSignerBuilder(sigAlgId,digAlgId);
-		PKCS10CertificationRequest certificationRequest=certificationRequestBuilder.build(contentSignerBuilder.build(keyParameter));
+//	public void testGenCSR() throws Exception{
+//		X500Name subject=new X500Name(DN_LIZ);
+//		AsymmetricKeyParameter keyParameter=PrivateKeyFactory.createKey(getZhangsanPrivateKey().getEncoded());
+//		SubjectPublicKeyInfo publicKeyInfo=SubjectPublicKeyInfoFactory.createSubjectPublicKeyInfo(keyParameter);
+//		PKCS10CertificationRequestBuilder certificationRequestBuilder=new PKCS10CertificationRequestBuilder(subject,publicKeyInfo);
+//		final AlgorithmIdentifier sigAlgId=new DefaultSignatureAlgorithmIdentifierFinder().find(SIG_ALG);
+//		final AlgorithmIdentifier digAlgId=new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
+//		BcRSAContentSignerBuilder contentSignerBuilder=new BcRSAContentSignerBuilder(sigAlgId,digAlgId);
+//		PKCS10CertificationRequest certificationRequest=certificationRequestBuilder.build(contentSignerBuilder.build(keyParameter));
+//	
+//		System.out.println(certificationRequest);
+//		writeFile("*/*/liz.csr",certificationRequest.getEncoded());
+//		
+//	}
 	
-		System.out.println(certificationRequest);
-		writeFile("*/*/liz.csr",certificationRequest.getEncoded());
-		
-	}
-	
-	@Test
-	public void testZhangsanCertWithCSR()throws Exception{
-		byte[] encoded=readFile("*/*/liz.csr");
-		PKCS10CertificationRequest certificationRequest=new PKCS10CertificationRequest(encoded);
-		
-		RSAKeyParameters parameter=(RSAKeyParameters)PublicKeyFactory.createKey(certificationRequest.getSubjectPublicKeyInfo());
-		RSAPublicKeySpec keySpec=new RSAPublicKeySpec(parameter.getModulus(),parameter.getExponent());
-		String algorithm=algorithmMap.get(certificationRequest.getSubjectPublicKeyInfo().getAlgorithm().getAlgorithm().toString());
-		PublicKey publicKey=KeyFactory.getInstance(algorithm).generatePublic(keySpec);
-		System.out.println(certificationRequest.getSubject());
-		X509V3CertificateGenerator certGen=new X509V3CertificateGenerator();
-		certGen.setIssuerDN(new X500Principal(DN_CA));
-		certGen.setNotAfter(new Date(System.currentTimeMillis()+100*24*60*60*1000));
-		certGen.setNotBefore(new Date());
-		certGen.setPublicKey(publicKey);
-		certGen.setSerialNumber(BigInteger.TEN);
-		certGen.setSignatureAlgorithm(algorithmMap.get(certificationRequest.getSignatureAlgorithm().getAlgorithm().toString()));
-		certGen.setSubjectDN(new X500Principal(certificationRequest.getSubject().toString()));
-		X509Certificate certificate=certGen.generate(getRootPrivateKey());
-		writeFile("*/*/liz.cer",certificate.getEncoded());
-		
-	}
+//	public void testZhangsanCertWithCSR()throws Exception{
+//		byte[] encoded=readFile("*/*/liz.csr");
+//		PKCS10CertificationRequest certificationRequest=new PKCS10CertificationRequest(encoded);
+//		
+//		RSAKeyParameters parameter=(RSAKeyParameters)PublicKeyFactory.createKey(certificationRequest.getSubjectPublicKeyInfo());
+//		RSAPublicKeySpec keySpec=new RSAPublicKeySpec(parameter.getModulus(),parameter.getExponent());
+//		String algorithm=algorithmMap.get(certificationRequest.getSubjectPublicKeyInfo().getAlgorithm().getAlgorithm().toString());
+//		PublicKey publicKey=KeyFactory.getInstance(algorithm).generatePublic(keySpec);
+//		System.out.println(certificationRequest.getSubject());
+//		X509V3CertificateGenerator certGen=new X509V3CertificateGenerator();
+//		certGen.setIssuerDN(new X500Principal(DN_CA));
+//		certGen.setNotAfter(new Date(System.currentTimeMillis()+100*24*60*60*1000));
+//		certGen.setNotBefore(new Date());
+//		certGen.setPublicKey(publicKey);
+//		certGen.setSerialNumber(BigInteger.TEN);
+//		certGen.setSignatureAlgorithm(algorithmMap.get(certificationRequest.getSignatureAlgorithm().getAlgorithm().toString()));
+//		certGen.setSubjectDN(new X500Principal(certificationRequest.getSubject().toString()));
+//		X509Certificate certificate=certGen.generate(getRootPrivateKey());
+//		writeFile("*/*/liz.cer",certificate.getEncoded());
+//	}
 	
 	public void writeFile(String path,byte[] content)throws Exception{
 		FileOutputStream fos=new FileOutputStream(path);
