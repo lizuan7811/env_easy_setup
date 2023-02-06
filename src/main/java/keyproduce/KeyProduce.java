@@ -11,6 +11,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -26,9 +29,12 @@ import java.security.Signature;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.spec.ECGenParameterSpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
@@ -137,13 +143,15 @@ public class KeyProduce {
 	/**
 	 * 產最初始的憑證並取KeyPair
 	 */
-	public KeyPair generateRootCA(String[] args) {
+	public KeyPair generateRootCA(String caName,int encrypSize,String keyAlgorithm) {
 		try {
-			KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KEY_PAIR_ALG);
-			keyPairGenerator.initialize(4096);
+			KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(keyAlgorithm);
+			keyPairGenerator.initialize(encrypSize);
 			KeyPair keyPair = keyPairGenerator.generateKeyPair();
-			writeObject("", keyPair.getPublic());
-			writeObject("", keyPair.getPrivate());
+			Path keyPath=Paths.get("C://Users/ASUS/Desktop/");
+			System.out.println(String.format("%s%s.crt",keyPath.toAbsolutePath(),caName));
+			writeObject(String.format("%s/%s.crt",keyPath.toAbsolutePath(),caName), keyPair.getPublic());
+			writeObject(String.format("%s/%s.key",keyPath.toAbsolutePath(),caName), keyPair.getPrivate());
 			return keyPair;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -157,6 +165,9 @@ private String keyStorePath;
 private KeyPair keyPair;
 private Date startDate;
 private Date endDate;
+
+private PublicKey sourcePublicKey;
+private PrivateKey sourcePrivateKey;
 
 	public void generateCert() throws Exception {
 		caPassword = "passw0rd";
@@ -409,4 +420,6 @@ private Date endDate;
 		return v3CertGen.build(sigGen);
 	}
 
+	
+	
 }
