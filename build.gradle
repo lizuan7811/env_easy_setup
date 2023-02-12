@@ -51,9 +51,12 @@ dependencies {
 	
 	 implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24' 
-	
-	// https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on
-	implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
+
+	// https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on
+	implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.72'
+	// https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
+	implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.72'
+
 
 
 }
