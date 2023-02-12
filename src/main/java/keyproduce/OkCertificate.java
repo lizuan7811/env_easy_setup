@@ -446,37 +446,42 @@ public class OkCertificate {
 			extSourceList.stream().filter(str -> valudResource(str) && str.indexOf('[') != -1).forEach(extName -> {
 				String[] tmpStr = extName.split("=");
 				ASN1ObjectIdentifier aOid = getExtnASN1OidFromName(tmpStr[0].trim());
+				String rfc822Regex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
+
 				if (tmpStr[1].indexOf(',') != -1) {
 					tmpStr = tmpStr[1].split(",");
 				}
+				if (extName.contains("DNS") || extName.contains("SAN") || extName.contains("IP")
+						|| extName.matches(rfc822Regex)) {
 
-				if (extName.contains("DNS") || extName.contains("SAN") || extName.contains("IP")) {
-					
-					
-					
-					GeneralName[] generalName=	new GeneralName[] { new GeneralName(GeneralName.dNSName, "dom.test.test") };
-					
-			GeneralNames generalNames=new GeneralNames(new GeneralName[] {
-					new GeneralName(GeneralName.dNSName,"")
-			});
+					if (extName.contains("DNS")) {
+						altNames.add(new GeneralName(GeneralName.dNSName, tmpStr[1]));
+					} else if (extName.contains("IP")) {
+						altNames.add(new GeneralName(GeneralName.iPAddress, tmpStr[1]));
+					}else if (extName.matches(rfc822Regex)) {
+						altNames.add(new GeneralName(GeneralName.rfc822Name, tmpStr[1]));
+					}
 
-			
-				
-				
-					extesionList.add(new Extension(Extension.subjectAlternativeName, true,ASN1OctetString.getInstance(generalName)));
-					
-				} else {
+				} else if(extName.contains("keyUsage")){
 					Arrays.asList(tmpStr).stream().forEach(str -> {
 						extesionList.add(new Extension(aOid, ASN1Boolean.TRUE,
-								ASN1OctetString.getInstance(subjectAlternativeName)));
+								ASN1OctetString.getInstance(new DERSequence(KeyPurposeId.anyExtendedKeyUsage))));
+					});
+				}else {
+					Arrays.asList(tmpStr).stream().forEach(str -> {
+						extesionList.add(new Extension(aOid, ASN1Boolean.TRUE,
+								ASN1OctetString.getInstance(aOid)));
 					});
 				}
-
+				
 			});
-
+			extesionList.add(new Extension(Extension.subjectAlternativeName, ASN1Boolean.TRUE,
+					ASN1OctetString.getInstance(new GeneralNames((GeneralName[]) altNames.toArray()))));
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
+		}finally {
+			
 		}
 		return null;
 
