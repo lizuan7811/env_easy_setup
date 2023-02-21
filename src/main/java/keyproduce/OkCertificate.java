@@ -100,6 +100,7 @@ public class OkCertificate {
 	private Set<String> subjFieldSet = new HashSet<>();
 	private final static BCStyle INSTANCE = (BCStyle) BCStyle.INSTANCE;
 
+	
 	/**
 	 * 產最初始的憑證並取KeyPair
 	 */
@@ -117,7 +118,9 @@ public class OkCertificate {
 			Decoder decode = Base64.getDecoder();
 			String publicKeyString = encode.encodeToString(rsaPublicKey.getEncoded());
 			String privateKeyString = encode.encodeToString(rsaPrivateKey.getEncoded());
-//			列印編碼後的key
+			
+			
+			//			列印編碼後的key
 //			System.out.println(rsaPublicKey);
 //			System.out.println(">>>\t" + publicKeyString);
 //			System.out.println();
