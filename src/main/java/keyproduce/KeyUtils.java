@@ -1,6 +1,9 @@
 package keyproduce;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -15,9 +18,20 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.Extensions;
+import org.bouncycastle.asn1.x509.ExtensionsGenerator;
+import org.springframework.util.ReflectionUtils;
 
 public class KeyUtils {
 	private static KeyFactory keyFactory;
@@ -76,5 +90,41 @@ public class KeyUtils {
 		sbr.append("-----END RSA PRIVATE KEY-----\n");
 		return sbr;
 	}
+	
+	private Map<String,List<String>> convertStringToExtMap(Path extFilePath){
+		
+		Map<String,List<String>> extMap=new HashMap<String,List<String>>();
+		
+		try {
+			Map<String,String> extNameMap=getExtensionFieldNames();
+			Files.readAllLines(extFilePath).stream().filter(perLine->extNameMap.containsKey(perLine.substring(0,perLine.indexOf('=')))).forEach(extStr->{
+				String[] tmpArr=extStr.split("=");
+				List<String>innerList=tmpArr[2].indexOf(",")!=-1?Arrays.asList(tmpArr[2].split(",")):Arrays.asList(tmpArr[2]);
+				extMap.put(extNameMap.get(tmpArr[0]),innerList);
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return extMap;
+	}
+
+	private Map<String,String>getExtensionFieldNames(){
+		Map<String,String> extNameMap=new HashMap<String,String>();
+		Arrays.asList(Extension.class.getDeclaredFields()).stream().forEach(field->{
+			ReflectionUtils.makeAccessible(field);
+			extNameMap.put(field.getName().toLowerCase(),field.getName());
+		});
+		return extNameMap;
+	}
+	
+	
+	private Extension getExtensions() {
+		
+		ExtensionsGenerator x509ExtensionGen=new ExtensionsGenerator();
+		return null;
+		
+		
+	}
+	
 	
 }
