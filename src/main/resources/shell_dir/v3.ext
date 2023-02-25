@@ -1,0 +1,5 @@
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth,clientAuth
+subjectalternativename = pibadm01,pibmid01,pibmid02,pibmid03,localhost,192.168.112.94,192.168.112.86,192.168.112.87,192.168.112.88

@@ -34,6 +34,8 @@ import org.bouncycastle.asn1.x509.ExtensionsGenerator;
 import org.springframework.util.ReflectionUtils;
 
 public class KeyUtils {
+	
+	private int lineCount=0;
 	private static KeyFactory keyFactory;
 	static {
 		try {
@@ -91,24 +93,24 @@ public class KeyUtils {
 		return sbr;
 	}
 	
-	private Map<String,List<String>> convertStringToExtMap(Path extFilePath){
+	public Map<String,List<String>> convertStringToExtMap(Path extFilePath){
 		
 		Map<String,List<String>> extMap=new HashMap<String,List<String>>();
-		
 		try {
 			Map<String,String> extNameMap=getExtensionFieldNames();
-			Files.readAllLines(extFilePath).stream().filter(perLine->extNameMap.containsKey(perLine.substring(0,perLine.indexOf('=')))).forEach(extStr->{
+			Files.readAllLines(extFilePath).stream().filter(perLine->perLine.indexOf("=")!=-1).filter(perLine->extNameMap.containsKey(perLine.substring(0,perLine.indexOf('=')).toLowerCase().trim())).forEach(extStr->{
 				String[] tmpArr=extStr.split("=");
-				List<String>innerList=tmpArr[2].indexOf(",")!=-1?Arrays.asList(tmpArr[2].split(",")):Arrays.asList(tmpArr[2]);
-				extMap.put(extNameMap.get(tmpArr[0]),innerList);
+				List<String>innerList=tmpArr[1].indexOf(",")!=-1?Arrays.asList(tmpArr[1].split(",")):Arrays.asList(tmpArr[1]);
+				extMap.put(extNameMap.get(tmpArr[0].toLowerCase().trim()),innerList);
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println(extMap);
 		return extMap;
 	}
 
-	private Map<String,String>getExtensionFieldNames(){
+	public Map<String,String>getExtensionFieldNames(){
 		Map<String,String> extNameMap=new HashMap<String,String>();
 		Arrays.asList(Extension.class.getDeclaredFields()).stream().forEach(field->{
 			ReflectionUtils.makeAccessible(field);
