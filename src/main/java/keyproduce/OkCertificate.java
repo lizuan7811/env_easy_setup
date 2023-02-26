@@ -155,7 +155,7 @@ public class OkCertificate {
 //			X500Principal subject=new X500Principal("CN=192.168.112.112,CN=192.168.112.113,CN=192.168.112.114, OU=JavaSoft, O=Sun Microsystems, C=US");
 //			X509v3CertificateBuilder x509CertGen = new X509v3CertificateBuilder(X500Name.getInstance(issuer.getEncoded()), BigInteger.TEN,new Date(), new Date(System.currentTimeMillis() + 100 * 24 * 60 * 60 * 1000),X500Name.getInstance(subject.getEncoded()), SubjectPublicKeyInfo.getInstance(rsaPublicKey.getEncoded()));
 
-//			ASN1ObjectIdentifier aSN1ObjectIdentifier=BCStyle.BUSINESS_CATEGORY;
+			ASN1ObjectIdentifier aSN1ObjectIdentifier=BCStyle.BUSINESS_CATEGORY;
 //			ASN1EncodableVector aSN1EncodableVector=new ASN1EncodableVector();
 
 //			ASN1OctetString aSN1OctetString=new DEROctetString("CN=Duke, OU=JavaSoft, O=Sun Microsystems, C=US".getBytes());
