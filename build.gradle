@@ -55,7 +55,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on
 	implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.72'
 	// https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
-	implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.72'
+	//implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.72'
+	// https://mvnrepository.com/artifact/org.bouncycastle/bcutil-jdk18on
+	implementation group: 'org.bouncycastle', name: 'bcutil-jdk18on', version: '1.72'
 
 
 
