@@ -1,4 +1,4 @@
-[phototext.txt](https://github.com/lizuan7811/env_easy_setup/files/10847173/phototext.txt)
+![image](https://github.com/lizuan7811/env_easy_setup/files/10847173/phototext.txt)
 
 # env_easy_setup
 ### Use Kafka、Kibana、Elasticsearch、RKE2 opts...!
