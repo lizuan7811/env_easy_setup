@@ -76,14 +76,14 @@ public class InitUtils {
 //			String baseSourceDirURI=baseResour.getFile().getAbsolutePath();
 //			String baseSourceDirURI = System.getProperty("user.dir");
 //		Resource resour=resolver.getResource(templatePath);
-			String basePathStr=System.getProperty("user.dir");
+			String basePathStr = System.getProperty("user.dir");
 			System.out.println(basePathStr);
-			System.out.println(Paths.get(basePathStr+templatePath));
+			System.out.println(Paths.get(basePathStr + templatePath));
 			Paths.get(basePathStr + "/config/shell_dir/key-init.sh").toFile().delete();
 //		try(BufferedReader br=Files.newBufferedReader(Paths.get(resour.getFile().getAbsolutePath()));
-			try (BufferedReader br = Files.newBufferedReader(Paths.get(basePathStr+templatePath));
-					BufferedWriter bw = Files.newBufferedWriter(Paths.get(basePathStr + "/config/shell_dir/key-init.sh"),
-							StandardOpenOption.CREATE_NEW);) {
+			try (BufferedReader br = Files.newBufferedReader(Paths.get(basePathStr + templatePath));
+					BufferedWriter bw = Files.newBufferedWriter(
+							Paths.get(basePathStr + "/config/shell_dir/key-init.sh"), StandardOpenOption.CREATE_NEW);) {
 				br.lines().forEach(str -> {
 					try {
 						bw.write(stringSubstitutor.replace(str));

@@ -6,7 +6,7 @@ plugins {
 }
 group='env.easy.setup'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '18'
 repositories {
     mavenCentral()
 }
@@ -39,6 +39,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.apache.commons/commons-text
 	implementation group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
 
+
 	// https://mvnrepository.com/artifact/org.projectlombok/lombok
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 	implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -48,8 +49,8 @@ dependencies {
 	implementation group: 'org.apache.tika', name: 'tika-core', version: '2.6.0'
 	
 	implementation fileTree(dir: 'libs', include: ['*.jar'])
-	
-	 implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+		//Lombok
+	implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
 	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24' 
 
 	// https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on
@@ -59,9 +60,46 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.bouncycastle/bcutil-jdk18on
 	implementation group: 'org.bouncycastle', name: 'bcutil-jdk18on', version: '1.72'
 
-
-
+	//Kubernetes 
+	//https://mvnrepository.com/artifact/io.kubernetes/client-java
+	implementation group: 'io.kubernetes', name: 'client-java', version: '17.0.1'
+	// https://mvnrepository.com/artifact/io.kubernetes/client-java-api
+	implementation group: 'io.kubernetes', name: 'client-java-api', version: '17.0.1'
+	// https://mvnrepository.com/artifact/io.kubernetes/client-java-extended
+	implementation group: 'io.kubernetes', name: 'client-java-extended', version: '17.0.1'
+	// https://mvnrepository.com/artifact/io.kubernetes/client-java-proto
+	implementation group: 'io.kubernetes', name: 'client-java-proto', version: '17.0.1'
+	// https://mvnrepository.com/artifact/io.kubernetes/client-java-api-fluent
+	implementation group: 'io.kubernetes', name: 'client-java-api-fluent', version: '17.0.1'
+	//compile 'io.kubernetes:client-java:17.0.1'
+	
+		//compile dependency
+	// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+	// https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api
+	implementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
+	// https://mvnrepository.com/artifact/io.swagger/swagger-annotations
+	implementation group: 'io.swagger', name: 'swagger-annotations', version: '1.6.9'
+	// https://mvnrepository.com/artifact/io.gsonfire/gson-fire
+	implementation group: 'io.gsonfire', name: 'gson-fire', version: '1.8.5'
+	// https://mvnrepository.com/artifact/com.squareup.okhttp3/logging-interceptor
+	implementation group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '4.10.0'
+	// https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.10.0'
+	// https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305
+	implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+	// https://mvnrepository.com/artifact/com.google.code.gson/gson
+	implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+	// https://mvnrepository.com/artifact/com.squareup.okhttp3/logging-interceptor
+	implementation group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '4.10.0'
+	// https://mvnrepository.com/artifact/io.swagger/swagger-annotations
+	implementation group: 'io.swagger', name: 'swagger-annotations', version: '1.6.9'
+	// https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib-jdk8
+	implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: '1.8.10'
+	// https://mvnrepository.com/artifact/com.squareup.okio/okio-jvm
+	runtimeOnly group: 'com.squareup.okio', name: 'okio-jvm', version: '3.3.0'
 }
+
 compileJava.dependsOn('clearDist')
 test.enabled = false
 ext.getTaskName = { ->
@@ -104,14 +142,15 @@ ext.getRuntimeEnvironment = { ->
 		def taskName = getTaskName()
 		return envName
 }
+
 bootRun {
 	def envName = getRuntimeEnvironment()
-	/*applicationDefaultJvmArgs = [
+	applicationDefaultJvmArgs = [
 		"-Dspring.profiles.active=dev",
 		"-Dspring.config.additional-location=classpath:platconf/application.yml"]
-		args = ["skipStartupError=true"]*/
+		args = ["skipStartupError=true"]
 }
-
+/*
 bootJar{
 
 	manifest {
@@ -137,7 +176,7 @@ bootJar{
 	    // 設定 Start jar 放置目錄
 	    destinationDirectory = file("$buildDir/libs/lib")	
 }
-/*
+*/
 jar {
     archiveFileName = "${archiveBaseName.get()}-${archiveVersion.get()}-RELEASE.${archiveExtension.get()}"
 
@@ -164,7 +203,7 @@ jar {
 	    destinationDirectory = file("$buildDir/libs/lib")
     
 }
-*/
+
 
 // Pull out lib from jar
 task copyLib(type: Copy) {

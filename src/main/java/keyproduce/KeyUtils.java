@@ -87,7 +87,7 @@ public class KeyUtils {
 	}
 
 	public KeyUtils() {
-		initkeys("default", 4096, "RSA");
+		initkeys("default-ca", 4096, "RSA");
 		this.validYears = 10;
 	}
 
@@ -344,9 +344,10 @@ public class KeyUtils {
 	private X509Certificate issueCertificate(PublicKey publicKey, Path extFilePath, int validYears) {
 		X500Name x500NameIsser = ((X500NameBuilder) getX500NameBuider(ISSUER, ISSUER_VALUE).get(ISSUER)).build();
 		X500Name x500NameSubject = ((X500NameBuilder) getX500NameBuider(SUBJ, SUBJECT_VALUE).get(SUBJ)).build();
-		X509v3CertificateBuilder x509CertGen = new X509v3CertificateBuilder(x500NameIsser,BigInteger.valueOf(new SecureRandom().nextLong()),
-				new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + validRange * validYears),
-				x500NameSubject, SubjectPublicKeyInfo.getInstance(((RSAPublicKey) publicKey).getEncoded()));
+		X509v3CertificateBuilder x509CertGen = new X509v3CertificateBuilder(x500NameIsser,
+				BigInteger.valueOf(new SecureRandom().nextLong()), new Date(System.currentTimeMillis()),
+				new Date(System.currentTimeMillis() + validRange * validYears), x500NameSubject,
+				SubjectPublicKeyInfo.getInstance(((RSAPublicKey) publicKey).getEncoded()));
 
 		Extensions exts = extPathToGetExtensions(extFilePath);
 
@@ -415,10 +416,8 @@ public class KeyUtils {
 				}
 			}
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return field;
 	}
-
 }
