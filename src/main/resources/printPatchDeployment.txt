@@ -1,0 +1,685 @@
+original deploymentclass V1Deployment {
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata: class V1ObjectMeta {
+        annotations: null
+        creationTimestamp: 2023-02-27T14:07:28Z
+        deletionGracePeriodSeconds: null
+        deletionTimestamp: null
+        finalizers: [example.com/test]
+        generateName: null
+        generation: 1
+        labels: {run=hello-node1}
+        managedFields: [class V1ManagedFieldsEntry {
+            apiVersion: apps/v1
+            fieldsType: FieldsV1
+            fieldsV1: {f:metadata={f:finalizers={.={}, v:"example.com/test"={}}, f:labels={.={}, f:run={}}}, f:spec={f:progressDeadlineSeconds={}, f:replicas={}, f:revisionHistoryLimit={}, f:selector={}, f:strategy={f:rollingUpdate={.={}, f:maxSurge={}, f:maxUnavailable={}}, f:type={}}, f:template={f:metadata={f:labels={.={}, f:run={}}}, f:spec={f:containers={k:{"name":"hello-node1"}={.={}, f:image={}, f:imagePullPolicy={}, f:name={}, f:ports={.={}, k:{"containerPort":8080,"protocol":"TCP"}={.={}, f:containerPort={}, f:protocol={}}}, f:resources={}, f:terminationMessagePath={}, f:terminationMessagePolicy={}}}, f:dnsPolicy={}, f:restartPolicy={}, f:schedulerName={}, f:securityContext={}, f:terminationGracePeriodSeconds={}}}}}
+            manager: Kubernetes Java Client
+            operation: Update
+            subresource: null
+            time: 2023-02-27T14:07:28Z
+        }]
+        name: hello-node1
+        namespace: default
+        ownerReferences: null
+        resourceVersion: 1547416
+        selfLink: null
+        uid: a0f4e00a-80f3-4178-9933-7e4b3664771d
+    }
+    spec: class V1DeploymentSpec {
+        minReadySeconds: null
+        paused: null
+        progressDeadlineSeconds: 600
+        replicas: 1
+        revisionHistoryLimit: 10
+        selector: class V1LabelSelector {
+            matchExpressions: null
+            matchLabels: {run=hello-node1}
+        }
+        strategy: class V1DeploymentStrategy {
+            rollingUpdate: class V1RollingUpdateDeployment {
+                maxSurge: 25%
+                maxUnavailable: 25%
+            }
+            type: RollingUpdate
+        }
+        template: class V1PodTemplateSpec {
+            metadata: class V1ObjectMeta {
+                annotations: null
+                creationTimestamp: null
+                deletionGracePeriodSeconds: null
+                deletionTimestamp: null
+                finalizers: null
+                generateName: null
+                generation: null
+                labels: {run=hello-node1}
+                managedFields: null
+                name: null
+                namespace: null
+                ownerReferences: null
+                resourceVersion: null
+                selfLink: null
+                uid: null
+            }
+            spec: class V1PodSpec {
+                activeDeadlineSeconds: null
+                affinity: null
+                automountServiceAccountToken: null
+                containers: [class V1Container {
+                    args: null
+                    command: null
+                    env: null
+                    envFrom: null
+                    image: hello-node:v1
+                    imagePullPolicy: IfNotPresent
+                    lifecycle: null
+                    livenessProbe: null
+                    name: hello-node1
+                    ports: [class V1ContainerPort {
+                        containerPort: 8080
+                        hostIP: null
+                        hostPort: null
+                        name: null
+                        protocol: TCP
+                    }]
+                    readinessProbe: null
+                    resources: class V1ResourceRequirements {
+                        limits: null
+                        requests: null
+                    }
+                    securityContext: null
+                    startupProbe: null
+                    stdin: null
+                    stdinOnce: null
+                    terminationMessagePath: /dev/termination-log
+                    terminationMessagePolicy: File
+                    tty: null
+                    volumeDevices: null
+                    volumeMounts: null
+                    workingDir: null
+                }]
+                dnsConfig: null
+                dnsPolicy: ClusterFirst
+                enableServiceLinks: null
+                ephemeralContainers: null
+                hostAliases: null
+                hostIPC: null
+                hostNetwork: null
+                hostPID: null
+                hostUsers: null
+                hostname: null
+                imagePullSecrets: null
+                initContainers: null
+                nodeName: null
+                nodeSelector: null
+                os: null
+                overhead: null
+                preemptionPolicy: null
+                priority: null
+                priorityClassName: null
+                readinessGates: null
+                restartPolicy: Always
+                runtimeClassName: null
+                schedulerName: default-scheduler
+                securityContext: class V1PodSecurityContext {
+                    fsGroup: null
+                    fsGroupChangePolicy: null
+                    runAsGroup: null
+                    runAsNonRoot: null
+                    runAsUser: null
+                    seLinuxOptions: null
+                    seccompProfile: null
+                    supplementalGroups: null
+                    sysctls: null
+                    windowsOptions: null
+                }
+                serviceAccount: null
+                serviceAccountName: null
+                setHostnameAsFQDN: null
+                shareProcessNamespace: null
+                subdomain: null
+                terminationGracePeriodSeconds: 30
+                tolerations: null
+                topologySpreadConstraints: null
+                volumes: null
+            }
+        }
+    }
+    status: class V1DeploymentStatus {
+        availableReplicas: null
+        collisionCount: null
+        conditions: null
+        observedGeneration: null
+        readyReplicas: null
+        replicas: null
+        unavailableReplicas: null
+        updatedReplicas: null
+    }
+}
+json-patched deploymentclass V1Deployment {
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata: class V1ObjectMeta {
+        annotations: {deployment.kubernetes.io/revision=1}
+        creationTimestamp: 2023-02-27T14:07:28Z
+        deletionGracePeriodSeconds: null
+        deletionTimestamp: null
+        finalizers: [example.com/test]
+        generateName: null
+        generation: 2
+        labels: {run=hello-node1}
+        managedFields: [class V1ManagedFieldsEntry {
+            apiVersion: apps/v1
+            fieldsType: FieldsV1
+            fieldsV1: {f:metadata={f:finalizers={.={}, v:"example.com/test"={}}, f:labels={.={}, f:run={}}}, f:spec={f:progressDeadlineSeconds={}, f:replicas={}, f:revisionHistoryLimit={}, f:selector={}, f:strategy={f:rollingUpdate={.={}, f:maxSurge={}, f:maxUnavailable={}}, f:type={}}, f:template={f:metadata={f:labels={.={}, f:run={}}}, f:spec={f:containers={k:{"name":"hello-node1"}={.={}, f:image={}, f:imagePullPolicy={}, f:name={}, f:ports={.={}, k:{"containerPort":8080,"protocol":"TCP"}={.={}, f:containerPort={}, f:protocol={}}}, f:resources={}, f:terminationMessagePath={}, f:terminationMessagePolicy={}}}, f:dnsPolicy={}, f:restartPolicy={}, f:schedulerName={}, f:securityContext={}, f:terminationGracePeriodSeconds={}}}}}
+            manager: Kubernetes Java Client
+            operation: Update
+            subresource: null
+            time: 2023-02-27T14:07:28Z
+        }, class V1ManagedFieldsEntry {
+            apiVersion: apps/v1
+            fieldsType: FieldsV1
+            fieldsV1: {f:metadata={f:annotations={.={}, f:deployment.kubernetes.io/revision={}}}, f:status={f:conditions={.={}, k:{"type":"Progressing"}={.={}, f:lastTransitionTime={}, f:lastUpdateTime={}, f:message={}, f:reason={}, f:status={}, f:type={}}}}}
+            manager: kube-controller-manager
+            operation: Update
+            subresource: status
+            time: 2023-02-27T14:07:28Z
+        }]
+        name: hello-node1
+        namespace: default
+        ownerReferences: null
+        resourceVersion: 1547419
+        selfLink: null
+        uid: a0f4e00a-80f3-4178-9933-7e4b3664771d
+    }
+    spec: class V1DeploymentSpec {
+        minReadySeconds: null
+        paused: null
+        progressDeadlineSeconds: 600
+        replicas: 1
+        revisionHistoryLimit: 10
+        selector: class V1LabelSelector {
+            matchExpressions: null
+            matchLabels: {run=hello-node1}
+        }
+        strategy: class V1DeploymentStrategy {
+            rollingUpdate: class V1RollingUpdateDeployment {
+                maxSurge: 25%
+                maxUnavailable: 25%
+            }
+            type: RollingUpdate
+        }
+        template: class V1PodTemplateSpec {
+            metadata: class V1ObjectMeta {
+                annotations: null
+                creationTimestamp: null
+                deletionGracePeriodSeconds: null
+                deletionTimestamp: null
+                finalizers: null
+                generateName: null
+                generation: null
+                labels: {run=hello-node1}
+                managedFields: null
+                name: null
+                namespace: null
+                ownerReferences: null
+                resourceVersion: null
+                selfLink: null
+                uid: null
+            }
+            spec: class V1PodSpec {
+                activeDeadlineSeconds: null
+                affinity: null
+                automountServiceAccountToken: null
+                containers: [class V1Container {
+                    args: null
+                    command: null
+                    env: null
+                    envFrom: null
+                    image: hello-node:v1
+                    imagePullPolicy: IfNotPresent
+                    lifecycle: null
+                    livenessProbe: null
+                    name: hello-node1
+                    ports: [class V1ContainerPort {
+                        containerPort: 8080
+                        hostIP: null
+                        hostPort: null
+                        name: null
+                        protocol: TCP
+                    }]
+                    readinessProbe: null
+                    resources: class V1ResourceRequirements {
+                        limits: null
+                        requests: null
+                    }
+                    securityContext: null
+                    startupProbe: null
+                    stdin: null
+                    stdinOnce: null
+                    terminationMessagePath: /dev/termination-log
+                    terminationMessagePolicy: File
+                    tty: null
+                    volumeDevices: null
+                    volumeMounts: null
+                    workingDir: null
+                }]
+                dnsConfig: null
+                dnsPolicy: ClusterFirst
+                enableServiceLinks: null
+                ephemeralContainers: null
+                hostAliases: null
+                hostIPC: null
+                hostNetwork: null
+                hostPID: null
+                hostUsers: null
+                hostname: null
+                imagePullSecrets: null
+                initContainers: null
+                nodeName: null
+                nodeSelector: null
+                os: null
+                overhead: null
+                preemptionPolicy: null
+                priority: null
+                priorityClassName: null
+                readinessGates: null
+                restartPolicy: Always
+                runtimeClassName: null
+                schedulerName: default-scheduler
+                securityContext: class V1PodSecurityContext {
+                    fsGroup: null
+                    fsGroupChangePolicy: null
+                    runAsGroup: null
+                    runAsNonRoot: null
+                    runAsUser: null
+                    seLinuxOptions: null
+                    seccompProfile: null
+                    supplementalGroups: null
+                    sysctls: null
+                    windowsOptions: null
+                }
+                serviceAccount: null
+                serviceAccountName: null
+                setHostnameAsFQDN: null
+                shareProcessNamespace: null
+                subdomain: null
+                terminationGracePeriodSeconds: 27
+                tolerations: null
+                topologySpreadConstraints: null
+                volumes: null
+            }
+        }
+    }
+    status: class V1DeploymentStatus {
+        availableReplicas: null
+        collisionCount: null
+        conditions: [class V1DeploymentCondition {
+            lastTransitionTime: 2023-02-27T14:07:28Z
+            lastUpdateTime: 2023-02-27T14:07:28Z
+            message: Created new replica set "hello-node1-68cdc48979"
+            reason: NewReplicaSetCreated
+            status: True
+            type: Progressing
+        }]
+        observedGeneration: null
+        readyReplicas: null
+        replicas: null
+        unavailableReplicas: null
+        updatedReplicas: null
+    }
+}
+strategic-merge-patched deploymentclass V1Deployment {
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata: class V1ObjectMeta {
+        annotations: {deployment.kubernetes.io/revision=1}
+        creationTimestamp: 2023-02-27T14:07:28Z
+        deletionGracePeriodSeconds: null
+        deletionTimestamp: null
+        finalizers: null
+        generateName: null
+        generation: 2
+        labels: {run=hello-node1}
+        managedFields: [class V1ManagedFieldsEntry {
+            apiVersion: apps/v1
+            fieldsType: FieldsV1
+            fieldsV1: {f:metadata={f:labels={.={}, f:run={}}}, f:spec={f:progressDeadlineSeconds={}, f:replicas={}, f:revisionHistoryLimit={}, f:selector={}, f:strategy={f:rollingUpdate={.={}, f:maxSurge={}, f:maxUnavailable={}}, f:type={}}, f:template={f:metadata={f:labels={.={}, f:run={}}}, f:spec={f:containers={k:{"name":"hello-node1"}={.={}, f:image={}, f:imagePullPolicy={}, f:name={}, f:ports={.={}, k:{"containerPort":8080,"protocol":"TCP"}={.={}, f:containerPort={}, f:protocol={}}}, f:resources={}, f:terminationMessagePath={}, f:terminationMessagePolicy={}}}, f:dnsPolicy={}, f:restartPolicy={}, f:schedulerName={}, f:securityContext={}, f:terminationGracePeriodSeconds={}}}}}
+            manager: Kubernetes Java Client
+            operation: Update
+            subresource: null
+            time: 2023-02-27T14:07:28Z
+        }, class V1ManagedFieldsEntry {
+            apiVersion: apps/v1
+            fieldsType: FieldsV1
+            fieldsV1: {f:metadata={f:annotations={.={}, f:deployment.kubernetes.io/revision={}}}, f:status={f:conditions={.={}, k:{"type":"Progressing"}={.={}, f:lastTransitionTime={}, f:lastUpdateTime={}, f:message={}, f:reason={}, f:status={}, f:type={}}}}}
+            manager: kube-controller-manager
+            operation: Update
+            subresource: status
+            time: 2023-02-27T14:07:28Z
+        }]
+        name: hello-node1
+        namespace: default
+        ownerReferences: null
+        resourceVersion: 1547425
+        selfLink: null
+        uid: a0f4e00a-80f3-4178-9933-7e4b3664771d
+    }
+    spec: class V1DeploymentSpec {
+        minReadySeconds: null
+        paused: null
+        progressDeadlineSeconds: 600
+        replicas: 1
+        revisionHistoryLimit: 10
+        selector: class V1LabelSelector {
+            matchExpressions: null
+            matchLabels: {run=hello-node1}
+        }
+        strategy: class V1DeploymentStrategy {
+            rollingUpdate: class V1RollingUpdateDeployment {
+                maxSurge: 25%
+                maxUnavailable: 25%
+            }
+            type: RollingUpdate
+        }
+        template: class V1PodTemplateSpec {
+            metadata: class V1ObjectMeta {
+                annotations: null
+                creationTimestamp: null
+                deletionGracePeriodSeconds: null
+                deletionTimestamp: null
+                finalizers: null
+                generateName: null
+                generation: null
+                labels: {run=hello-node1}
+                managedFields: null
+                name: null
+                namespace: null
+                ownerReferences: null
+                resourceVersion: null
+                selfLink: null
+                uid: null
+            }
+            spec: class V1PodSpec {
+                activeDeadlineSeconds: null
+                affinity: null
+                automountServiceAccountToken: null
+                containers: [class V1Container {
+                    args: null
+                    command: null
+                    env: null
+                    envFrom: null
+                    image: hello-node:v1
+                    imagePullPolicy: IfNotPresent
+                    lifecycle: null
+                    livenessProbe: null
+                    name: hello-node1
+                    ports: [class V1ContainerPort {
+                        containerPort: 8080
+                        hostIP: null
+                        hostPort: null
+                        name: null
+                        protocol: TCP
+                    }]
+                    readinessProbe: null
+                    resources: class V1ResourceRequirements {
+                        limits: null
+                        requests: null
+                    }
+                    securityContext: null
+                    startupProbe: null
+                    stdin: null
+                    stdinOnce: null
+                    terminationMessagePath: /dev/termination-log
+                    terminationMessagePolicy: File
+                    tty: null
+                    volumeDevices: null
+                    volumeMounts: null
+                    workingDir: null
+                }]
+                dnsConfig: null
+                dnsPolicy: ClusterFirst
+                enableServiceLinks: null
+                ephemeralContainers: null
+                hostAliases: null
+                hostIPC: null
+                hostNetwork: null
+                hostPID: null
+                hostUsers: null
+                hostname: null
+                imagePullSecrets: null
+                initContainers: null
+                nodeName: null
+                nodeSelector: null
+                os: null
+                overhead: null
+                preemptionPolicy: null
+                priority: null
+                priorityClassName: null
+                readinessGates: null
+                restartPolicy: Always
+                runtimeClassName: null
+                schedulerName: default-scheduler
+                securityContext: class V1PodSecurityContext {
+                    fsGroup: null
+                    fsGroupChangePolicy: null
+                    runAsGroup: null
+                    runAsNonRoot: null
+                    runAsUser: null
+                    seLinuxOptions: null
+                    seccompProfile: null
+                    supplementalGroups: null
+                    sysctls: null
+                    windowsOptions: null
+                }
+                serviceAccount: null
+                serviceAccountName: null
+                setHostnameAsFQDN: null
+                shareProcessNamespace: null
+                subdomain: null
+                terminationGracePeriodSeconds: 27
+                tolerations: null
+                topologySpreadConstraints: null
+                volumes: null
+            }
+        }
+    }
+    status: class V1DeploymentStatus {
+        availableReplicas: null
+        collisionCount: null
+        conditions: [class V1DeploymentCondition {
+            lastTransitionTime: 2023-02-27T14:07:28Z
+            lastUpdateTime: 2023-02-27T14:07:28Z
+            message: Created new replica set "hello-node1-68cdc48979"
+            reason: NewReplicaSetCreated
+            status: True
+            type: Progressing
+        }]
+        observedGeneration: null
+        readyReplicas: null
+        replicas: null
+        unavailableReplicas: null
+        updatedReplicas: null
+    }
+}
+application/apply-patch+yaml deployment class V1Deployment {
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata: class V1ObjectMeta {
+        annotations: {deployment.kubernetes.io/revision=1}
+        creationTimestamp: 2023-02-27T14:07:28Z
+        deletionGracePeriodSeconds: null
+        deletionTimestamp: null
+        finalizers: [example.com/test]
+        generateName: null
+        generation: 3
+        labels: {run=hello-node1}
+        managedFields: [class V1ManagedFieldsEntry {
+            apiVersion: apps/v1
+            fieldsType: FieldsV1
+            fieldsV1: {f:metadata={f:finalizers={v:"example.com/test"={}}, f:labels={f:run={}}}, f:spec={f:replicas={}, f:selector={}, f:strategy={}, f:template={f:metadata={f:creationTimestamp={}, f:labels={f:run={}}}, f:spec={f:containers={k:{"name":"hello-node1"}={.={}, f:image={}, f:name={}, f:ports={k:{"containerPort":8080,"protocol":"TCP"}={.={}, f:containerPort={}, f:protocol={}}}, f:resources={}}}, f:terminationGracePeriodSeconds={}}}}}
+            manager: example-field-manager
+            operation: Apply
+            subresource: null
+            time: 2023-02-27T14:07:28Z
+        }, class V1ManagedFieldsEntry {
+            apiVersion: apps/v1
+            fieldsType: FieldsV1
+            fieldsV1: {f:metadata={f:labels={.={}, f:run={}}}, f:spec={f:progressDeadlineSeconds={}, f:replicas={}, f:revisionHistoryLimit={}, f:selector={}, f:strategy={f:rollingUpdate={.={}, f:maxSurge={}, f:maxUnavailable={}}, f:type={}}, f:template={f:metadata={f:labels={.={}, f:run={}}}, f:spec={f:containers={k:{"name":"hello-node1"}={.={}, f:imagePullPolicy={}, f:name={}, f:ports={.={}, k:{"containerPort":8080,"protocol":"TCP"}={.={}, f:containerPort={}, f:protocol={}}}, f:resources={}, f:terminationMessagePath={}, f:terminationMessagePolicy={}}}, f:dnsPolicy={}, f:restartPolicy={}, f:schedulerName={}, f:securityContext={}}}}}
+            manager: Kubernetes Java Client
+            operation: Update
+            subresource: null
+            time: 2023-02-27T14:07:28Z
+        }, class V1ManagedFieldsEntry {
+            apiVersion: apps/v1
+            fieldsType: FieldsV1
+            fieldsV1: {f:metadata={f:annotations={.={}, f:deployment.kubernetes.io/revision={}}}, f:status={f:conditions={.={}, k:{"type":"Progressing"}={.={}, f:lastTransitionTime={}, f:lastUpdateTime={}, f:message={}, f:reason={}, f:status={}, f:type={}}}}}
+            manager: kube-controller-manager
+            operation: Update
+            subresource: status
+            time: 2023-02-27T14:07:28Z
+        }]
+        name: hello-node1
+        namespace: default
+        ownerReferences: null
+        resourceVersion: 1547429
+        selfLink: null
+        uid: a0f4e00a-80f3-4178-9933-7e4b3664771d
+    }
+    spec: class V1DeploymentSpec {
+        minReadySeconds: null
+        paused: null
+        progressDeadlineSeconds: 600
+        replicas: 1
+        revisionHistoryLimit: 10
+        selector: class V1LabelSelector {
+            matchExpressions: null
+            matchLabels: {run=hello-node1}
+        }
+        strategy: class V1DeploymentStrategy {
+            rollingUpdate: class V1RollingUpdateDeployment {
+                maxSurge: 25%
+                maxUnavailable: 25%
+            }
+            type: RollingUpdate
+        }
+        template: class V1PodTemplateSpec {
+            metadata: class V1ObjectMeta {
+                annotations: null
+                creationTimestamp: null
+                deletionGracePeriodSeconds: null
+                deletionTimestamp: null
+                finalizers: null
+                generateName: null
+                generation: null
+                labels: {run=hello-node1}
+                managedFields: null
+                name: null
+                namespace: null
+                ownerReferences: null
+                resourceVersion: null
+                selfLink: null
+                uid: null
+            }
+            spec: class V1PodSpec {
+                activeDeadlineSeconds: null
+                affinity: null
+                automountServiceAccountToken: null
+                containers: [class V1Container {
+                    args: null
+                    command: null
+                    env: null
+                    envFrom: null
+                    image: hello-node:v2
+                    imagePullPolicy: IfNotPresent
+                    lifecycle: null
+                    livenessProbe: null
+                    name: hello-node1
+                    ports: [class V1ContainerPort {
+                        containerPort: 8080
+                        hostIP: null
+                        hostPort: null
+                        name: null
+                        protocol: TCP
+                    }]
+                    readinessProbe: null
+                    resources: class V1ResourceRequirements {
+                        limits: null
+                        requests: null
+                    }
+                    securityContext: null
+                    startupProbe: null
+                    stdin: null
+                    stdinOnce: null
+                    terminationMessagePath: /dev/termination-log
+                    terminationMessagePolicy: File
+                    tty: null
+                    volumeDevices: null
+                    volumeMounts: null
+                    workingDir: null
+                }]
+                dnsConfig: null
+                dnsPolicy: ClusterFirst
+                enableServiceLinks: null
+                ephemeralContainers: null
+                hostAliases: null
+                hostIPC: null
+                hostNetwork: null
+                hostPID: null
+                hostUsers: null
+                hostname: null
+                imagePullSecrets: null
+                initContainers: null
+                nodeName: null
+                nodeSelector: null
+                os: null
+                overhead: null
+                preemptionPolicy: null
+                priority: null
+                priorityClassName: null
+                readinessGates: null
+                restartPolicy: Always
+                runtimeClassName: null
+                schedulerName: default-scheduler
+                securityContext: class V1PodSecurityContext {
+                    fsGroup: null
+                    fsGroupChangePolicy: null
+                    runAsGroup: null
+                    runAsNonRoot: null
+                    runAsUser: null
+                    seLinuxOptions: null
+                    seccompProfile: null
+                    supplementalGroups: null
+                    sysctls: null
+                    windowsOptions: null
+                }
+                serviceAccount: null
+                serviceAccountName: null
+                setHostnameAsFQDN: null
+                shareProcessNamespace: null
+                subdomain: null
+                terminationGracePeriodSeconds: 30
+                tolerations: null
+                topologySpreadConstraints: null
+                volumes: null
+            }
+        }
+    }
+    status: class V1DeploymentStatus {
+        availableReplicas: null
+        collisionCount: null
+        conditions: [class V1DeploymentCondition {
+            lastTransitionTime: 2023-02-27T14:07:28Z
+            lastUpdateTime: 2023-02-27T14:07:28Z
+            message: Created new replica set "hello-node1-68cdc48979"
+            reason: NewReplicaSetCreated
+            status: True
+            type: Progressing
+        }]
+        observedGeneration: null
+        readyReplicas: null
+        replicas: null
+        unavailableReplicas: null
+        updatedReplicas: null
+    }
+}

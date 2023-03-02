@@ -58,7 +58,7 @@ public class InitUtils {
 		tempShellToKeyShell(getParams());
 	}
 
-	private static void tempShellToKeyShell(Map<String, String> params) {
+	private void tempShellToKeyShell(Map<String, String> params) {
 //		processTemplate("classpath:template_dir/template-key-init.sh", params);
 		processTemplate("/config/template_dir/template-key-init.sh", params);
 
@@ -67,7 +67,7 @@ public class InitUtils {
 	/**
 	 * 渲染key shell模板
 	 */
-	private static void processTemplate(String templatePath, Map<String, String> params) {
+	private void processTemplate(String templatePath, Map<String, String> params) {
 		StringSubstitutor stringSubstitutor = new StringSubstitutor(params);
 		StringBuffer sb = new StringBuffer();
 //		ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
@@ -76,10 +76,9 @@ public class InitUtils {
 //			String baseSourceDirURI=baseResour.getFile().getAbsolutePath();
 //			String baseSourceDirURI = System.getProperty("user.dir");
 //		Resource resour=resolver.getResource(templatePath);
-			String basePathStr = System.getProperty("user.dir");
+			String basePathStr = EveryStepMethod.userDirPath;
 			System.out.println(basePathStr);
-			System.out.println(Paths.get(basePathStr + templatePath));
-			Paths.get(basePathStr + "/config/shell_dir/key-init.sh").toFile().delete();
+			Paths.get(basePathStr,"/config/shell_dir/key-init.sh").toFile().delete();
 //		try(BufferedReader br=Files.newBufferedReader(Paths.get(resour.getFile().getAbsolutePath()));
 			try (BufferedReader br = Files.newBufferedReader(Paths.get(basePathStr + templatePath));
 					BufferedWriter bw = Files.newBufferedWriter(

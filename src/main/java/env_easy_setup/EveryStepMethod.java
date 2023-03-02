@@ -44,7 +44,7 @@ public class EveryStepMethod {
 		this.initUtils=initUtils;
 	}
 
-	private List<String> selectedItems;
+	private List<String> selectedItems=new ArrayList<String>();
 
 	private BigDecimal cpu;
 
@@ -56,7 +56,7 @@ public class EveryStepMethod {
 
 	private Map<String, String> itemsPathMap;
 
-	private final static String userDirPath=System.getProperty("user.dir");
+	public final static String userDirPath=Paths.get(System.getProperty("user.dir"),"src/main/resources/").toString();
 	
 	/**
 	 * 開始安裝程式
@@ -65,31 +65,71 @@ public class EveryStepMethod {
 		
 //		初始化sys前，先確認是否使用tls
 		if(tlsConfig.getEncryptConn()) {
-			this.selectedItems.add("key-init");
+			this.selectedItems.add("key");
 		}
 		
 //		初始化系統參數並開啟防火牆。
+		
+//		根據蒐集到為true的項目去執行讀取shell script，確認檔案是否存在，檔案均存在>繼續執行，否則需要建立相對應的檔案。
 		if (initSysInfo() ) {
 			System.out.printf("Start to execute shells!");
+			System.out.println(itemsPathMap.size());
 			assert (itemsPathMap.size() > 0);
+			selectedItems.forEach(System.out::println);
 			
 			this.selectedItems.stream().forEach(obj->{
 //				sysinfo-init.sh 初始化系統 執行
+				sysInfoShell();
+				processBuilder(obj);
 //				firewallcmd-init.sh 防火牆設定
+				firewallCmdShell();
 //				docker-init.sh 安裝
+				dockerShell();
 //				harbor-init.sh 安裝
+				harborShell();
 //				rke2-init.sh 安裝rke2
+				rke2InitShell();
 //				rancher-init.sh 安裝k3s+rancher
 //				kafka-init.sh 安裝kafka
+				kafkaInitShell();
 //				filebeat-init.sh 安裝
+				fileBeatInitShell();
 //				elasticsearch-init.sh 安裝
 //				kibana.sh 安裝
-				execShellScript(obj);
+//				execShellScript(obj);
 			});
 			System.out.printf("Finished execute shells!");
 		}
 	}
 
+	private void sysInfoShell() {
+		
+	}
+	
+	private void firewallCmdShell() {
+		
+	}
+	
+	private void dockerShell() {
+		
+	}
+	
+	private void harborShell() {
+		
+	}
+	
+	private void rke2InitShell() {
+		
+	}
+	
+	private void kafkaInitShell() {
+		
+	}
+	
+	private void fileBeatInitShell() {
+		
+	}
+	
 	/**
 	 * 初始化系統資訊
 	 */
@@ -98,7 +138,7 @@ public class EveryStepMethod {
 //		this.cpu = LinuxInfoUtil.getCpuInfo();
 //		this.availableMem = LinuxInfoUtil.getAvailableMemory();
 //		蒐集選擇為true的項目
-		this.selectedItems = getSelectedItems();
+		this.selectedItems.addAll(getSelectedItems());
 //		根據蒐集到為true的項目去執行讀取shell script，確認檔案是否存在。
 //			boolean isExist=validFileExist(selectedItems);
 //			若檔案均存在>繼續執行，否則需要建立相對應的檔案。
@@ -111,7 +151,7 @@ public class EveryStepMethod {
 	 * @return
 	 */
 	private List<String> getSelectedItems() {
-		
+//		渲染產生key的模板
 		if(tlsConfig.getEncryptConn()) {
 			initUtils.tempShellToKeyShell();
 		}
@@ -133,33 +173,39 @@ public class EveryStepMethod {
 	}
 
 	/**
-	 * 檢查選擇的項目shell script檔案存在，印出不存在的檔案
+	 * 檢查選擇的項目shell script檔案存在，同時設定檔案可執行權限，印出不存在的檔案
 	 * 
 	 * @param selectedItemsList
 	 * @return
 	 * @throws IOException
 	 */
 	private boolean validFileExist(List<String> selectedItemsList) {
-		List<String> copiedItemsList = selectedItemsList;
+		List<String> copiedItemsList = new ArrayList<String>(selectedItemsList);
+		
+		copiedItemsList.stream().forEach(System.out::println);
+		
 		itemsPathMap=new HashMap<String,String>();
 		try {
 //			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 //			Resource resour=resolver.getResource("classpath:shell_dir/");
 //			Path paths=Paths.get(resour.getURI());
+			
 			Path paths=Paths.get(userDirPath+"/config/shell_dir/");
 			Stream<Path> fileStream = Files.list(paths.toAbsolutePath());
-			
 			fileStream.forEach(path -> {
+
 				String fileName = path.toFile().getName();
 				String fileAbsolutePath=path.toFile().getAbsolutePath();
-				String cutedFileName = fileName.substring(0, fileName.indexOf('-'));
-				
-				if (copiedItemsList.contains(cutedFileName)) {
+//				System.out.println(fileName+"\t"+fileAbsolutePath);
+				String cutedFileName = fileName.indexOf("-")!=-1?fileName.substring(0, fileName.indexOf('-')):fileName;
+				System.out.println("copiedItemsList.contains\t"+cutedFileName+"\t"+copiedItemsList.contains(cutedFileName.toString()));
+				if (copiedItemsList.contains((String)cutedFileName)) {
+//					System.out.println("copiedItemsList.contains(cutedFileName)"+cutedFileName);
 //					*-*.sh
 					itemsPathMap.put(cutedFileName, path.toString());
 					copiedItemsList.remove(cutedFileName);
 				}
-				setShellFileAuth(Arrays.asList("chmod","+x",fileAbsolutePath));
+//				setShellFileAuth(Arrays.asList("chmod","+x",fileAbsolutePath));
 			});
 			fileStream.close();
 
@@ -238,9 +284,11 @@ public class EveryStepMethod {
 	 */
 	private void processBuilder(String shellPath) {
 		try {
+			System.out.println("執行:\t"+shellPath);
 			ProcessBuilder processBuild = new ProcessBuilder(shellPath);
 			Process process = processBuild.start();
-			process.waitFor();
+			int processResult=process.waitFor();
+			System.out.println(processResult);
 			printResult(process);
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();

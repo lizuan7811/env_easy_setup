@@ -1,0 +1,400 @@
+metadata {
+  name: "filebeat-mgl57"
+  generateName: "filebeat-"
+  namespace: "default"
+  selfLink: ""
+  uid: "95bc36a2-de8a-4eed-85de-4388ae1f71d5"
+  resourceVersion: "1420563"
+  generation: 0
+  creationTimestamp {
+    seconds: 1672803940
+    nanos: 0
+  }
+  labels {
+    key: "app"
+    value: "filebeat"
+  }
+  labels {
+    key: "controller-revision-hash"
+    value: "74ff8f958d"
+  }
+  labels {
+    key: "pod-template-generation"
+    value: "2"
+  }
+  annotations {
+    key: "cni.projectcalico.org/containerID"
+    value: "2b07a13c856f737597a6d752df2bdb51cc64e93fd19b2abb8cb6cc24078ede77"
+  }
+  annotations {
+    key: "cni.projectcalico.org/podIP"
+    value: "10.42.0.199/32"
+  }
+  annotations {
+    key: "cni.projectcalico.org/podIPs"
+    value: "10.42.0.199/32"
+  }
+  annotations {
+    key: "kubernetes.io/psp"
+    value: "global-unrestricted-psp"
+  }
+  ownerReferences {
+    kind: "DaemonSet"
+    name: "filebeat"
+    uid: "4467238b-6e62-42b6-a7d5-ed718500f84a"
+    apiVersion: "apps/v1"
+    controller: true
+    blockOwnerDeletion: true
+  }
+  clusterName: ""
+  managedFields {
+    manager: "kube-controller-manager"
+    operation: "Update"
+    apiVersion: "v1"
+    time {
+      seconds: 1672803940
+      nanos: 0
+    }
+    fieldsType: "FieldsV1"
+    fieldsV1 {
+      Raw: "{\"f:metadata\":{\"f:generateName\":{},\"f:labels\":{\".\":{},\"f:app\":{},\"f:controller-revision-hash\":{},\"f:pod-template-generation\":{}},\"f:ownerReferences\":{\".\":{},\"k:{\\\"uid\\\":\\\"4467238b-6e62-42b6-a7d5-ed718500f84a\\\"}\":{}}},\"f:spec\":{\"f:affinity\":{\".\":{},\"f:nodeAffinity\":{\".\":{},\"f:requiredDuringSchedulingIgnoredDuringExecution\":{}}},\"f:containers\":{\"k:{\\\"name\\\":\\\"filebeat-contain\\\"}\":{\".\":{},\"f:args\":{},\"f:env\":{\".\":{},\"k:{\\\"name\\\":\\\"ACK\\\"}\":{\".\":{},\"f:name\":{},\"f:value\":{}},\"k:{\\\"name\\\":\\\"KAFKA_URL\\\"}\":{\".\":{},\"f:name\":{},\"f:value\":{}},\"k:{\\\"name\\\":\\\"LOG_LEVEL\\\"}\":{\".\":{},\"f:name\":{},\"f:value\":{}},\"k:{\\\"name\\\":\\\"NODE_NAME\\\"}\":{\".\":{},\"f:name\":{},\"f:valueFrom\":{\".\":{},\"f:fieldRef\":{}}},\"k:{\\\"name\\\":\\\"TOPIC_NAME\\\"}\":{\".\":{},\"f:name\":{},\"f:value\":{}}},\"f:image\":{},\"f:imagePullPolicy\":{},\"f:name\":{},\"f:resources\":{},\"f:securityContext\":{\".\":{},\"f:privileged\":{},\"f:runAsUser\":{}},\"f:terminationMessagePath\":{},\"f:terminationMessagePolicy\":{},\"f:volumeMounts\":{\".\":{},\"k:{\\\"mountPath\\\":\\\"/etc/filebeat.yml\\\"}\":{\".\":{},\"f:mountPath\":{},\"f:name\":{},\"f:readOnly\":{},\"f:subPath\":{}},\"k:{\\\"mountPath\\\":\\\"/var/log/containers\\\"}\":{\".\":{},\"f:mountPath\":{},\"f:name\":{},\"f:readOnly\":{}},\"k:{\\\"mountPath\\\":\\\"/var/log/pods\\\"}\":{\".\":{},\"f:mountPath\":{},\"f:name\":{},\"f:readOnly\":{}}}}},\"f:dnsPolicy\":{},\"f:enableServiceLinks\":{},\"f:restartPolicy\":{},\"f:schedulerName\":{},\"f:securityContext\":{},\"f:serviceAccount\":{},\"f:serviceAccountName\":{},\"f:terminationGracePeriodSeconds\":{},\"f:tolerations\":{},\"f:volumes\":{\".\":{},\"k:{\\\"name\\\":\\\"config\\\"}\":{\".\":{},\"f:configMap\":{\".\":{},\"f:defaultMode\":{},\"f:name\":{}},\"f:name\":{}},\"k:{\\\"name\\\":\\\"varlogcontainers\\\"}\":{\".\":{},\"f:hostPath\":{\".\":{},\"f:path\":{},\"f:type\":{}},\"f:name\":{}},\"k:{\\\"name\\\":\\\"varlogpods\\\"}\":{\".\":{},\"f:hostPath\":{\".\":{},\"f:path\":{},\"f:type\":{}},\"f:name\":{}}}}}"
+    }
+    subresource: ""
+  }
+  managedFields {
+    manager: "calico"
+    operation: "Update"
+    apiVersion: "v1"
+    time {
+      seconds: 1672803941
+      nanos: 0
+    }
+    fieldsType: "FieldsV1"
+    fieldsV1 {
+      Raw: "{\"f:metadata\":{\"f:annotations\":{\"f:cni.projectcalico.org/containerID\":{},\"f:cni.projectcalico.org/podIP\":{},\"f:cni.projectcalico.org/podIPs\":{}}}}"
+    }
+    subresource: "status"
+  }
+  managedFields {
+    manager: "kubelet"
+    operation: "Update"
+    apiVersion: "v1"
+    time {
+      seconds: 1677462082
+      nanos: 0
+    }
+    fieldsType: "FieldsV1"
+    fieldsV1 {
+      Raw: "{\"f:status\":{\"f:conditions\":{\"k:{\\\"type\\\":\\\"ContainersReady\\\"}\":{\".\":{},\"f:lastProbeTime\":{},\"f:lastTransitionTime\":{},\"f:status\":{},\"f:type\":{}},\"k:{\\\"type\\\":\\\"Initialized\\\"}\":{\".\":{},\"f:lastProbeTime\":{},\"f:lastTransitionTime\":{},\"f:status\":{},\"f:type\":{}},\"k:{\\\"type\\\":\\\"Ready\\\"}\":{\".\":{},\"f:lastProbeTime\":{},\"f:lastTransitionTime\":{},\"f:status\":{},\"f:type\":{}}},\"f:containerStatuses\":{},\"f:hostIP\":{},\"f:phase\":{},\"f:podIP\":{},\"f:podIPs\":{\".\":{},\"k:{\\\"ip\\\":\\\"10.42.0.199\\\"}\":{\".\":{},\"f:ip\":{}}},\"f:startTime\":{}}}"
+    }
+    subresource: "status"
+  }
+}
+spec {
+  volumes {
+    name: "config"
+    volumeSource {
+      configMap {
+        localObjectReference {
+          name: "filebeat-config"
+        }
+        defaultMode: 384
+      }
+    }
+  }
+  volumes {
+    name: "varlogcontainers"
+    volumeSource {
+      hostPath {
+        path: "/var/log/containers"
+        type: ""
+      }
+    }
+  }
+  volumes {
+    name: "varlogpods"
+    volumeSource {
+      hostPath {
+        path: "/var/log/pods"
+        type: "Directory"
+      }
+    }
+  }
+  volumes {
+    name: "kube-api-access-58h7j"
+    volumeSource {
+      projected {
+        sources {
+          serviceAccountToken {
+            audience: ""
+            expirationSeconds: 3607
+            path: "token"
+          }
+        }
+        sources {
+          configMap {
+            localObjectReference {
+              name: "kube-root-ca.crt"
+            }
+            items {
+              key: "ca.crt"
+              path: "ca.crt"
+            }
+          }
+        }
+        sources {
+          downwardAPI {
+            items {
+              path: "namespace"
+              fieldRef {
+                apiVersion: "v1"
+                fieldPath: "metadata.namespace"
+              }
+            }
+          }
+        }
+        defaultMode: 420
+      }
+    }
+  }
+  containers {
+    name: "filebeat-contain"
+    image: "docker.elastic.co/beats/filebeat:7.17.0"
+    args: "-c"
+    args: "/etc/filebeat.yml"
+    args: "-e"
+    workingDir: ""
+    env {
+      name: "KAFKA_URL"
+      value: "[172.168.113.110:9092]"
+    }
+    env {
+      name: "TOPIC_NAME"
+      value: "filebeat-kafka-elastic"
+    }
+    env {
+      name: "LOG_LEVEL"
+      value: "info"
+    }
+    env {
+      name: "ACK"
+      value: "1"
+    }
+    env {
+      name: "NODE_NAME"
+      value: ""
+      valueFrom {
+        fieldRef {
+          apiVersion: "v1"
+          fieldPath: "spec.nodeName"
+        }
+      }
+    }
+    resources {
+    }
+    volumeMounts {
+      name: "config"
+      readOnly: true
+      mountPath: "/etc/filebeat.yml"
+      subPath: "filebeat.yml"
+      subPathExpr: ""
+    }
+    volumeMounts {
+      name: "varlogcontainers"
+      readOnly: true
+      mountPath: "/var/log/containers"
+      subPath: ""
+      subPathExpr: ""
+    }
+    volumeMounts {
+      name: "varlogpods"
+      readOnly: true
+      mountPath: "/var/log/pods"
+      subPath: ""
+      subPathExpr: ""
+    }
+    volumeMounts {
+      name: "kube-api-access-58h7j"
+      readOnly: true
+      mountPath: "/var/run/secrets/kubernetes.io/serviceaccount"
+      subPath: ""
+      subPathExpr: ""
+    }
+    terminationMessagePath: "/dev/termination-log"
+    imagePullPolicy: "IfNotPresent"
+    securityContext {
+      privileged: true
+      runAsUser: 0
+    }
+    stdin: false
+    stdinOnce: false
+    tty: false
+    terminationMessagePolicy: "File"
+  }
+  restartPolicy: "Always"
+  terminationGracePeriodSeconds: 30
+  dnsPolicy: "ClusterFirstWithHostNet"
+  serviceAccountName: "filebeat-service-acc"
+  serviceAccount: "filebeat-service-acc"
+  nodeName: "rke2-server4"
+  hostNetwork: false
+  hostPID: false
+  hostIPC: false
+  securityContext {
+  }
+  hostname: ""
+  subdomain: ""
+  affinity {
+    nodeAffinity {
+      requiredDuringSchedulingIgnoredDuringExecution {
+        nodeSelectorTerms {
+          matchFields {
+            key: "metadata.name"
+            operator: "In"
+            values: "rke2-server4"
+          }
+        }
+      }
+    }
+  }
+  schedulerName: "default-scheduler"
+  tolerations {
+    key: "node.kubernetes.io/not-ready"
+    operator: "Exists"
+    value: ""
+    effect: "NoExecute"
+  }
+  tolerations {
+    key: "node.kubernetes.io/unreachable"
+    operator: "Exists"
+    value: ""
+    effect: "NoExecute"
+  }
+  tolerations {
+    key: "node.kubernetes.io/disk-pressure"
+    operator: "Exists"
+    value: ""
+    effect: "NoSchedule"
+  }
+  tolerations {
+    key: "node.kubernetes.io/memory-pressure"
+    operator: "Exists"
+    value: ""
+    effect: "NoSchedule"
+  }
+  tolerations {
+    key: "node.kubernetes.io/pid-pressure"
+    operator: "Exists"
+    value: ""
+    effect: "NoSchedule"
+  }
+  tolerations {
+    key: "node.kubernetes.io/unschedulable"
+    operator: "Exists"
+    value: ""
+    effect: "NoSchedule"
+  }
+  priorityClassName: ""
+  priority: 0
+  enableServiceLinks: true
+  preemptionPolicy: "PreemptLowerPriority"
+}
+status {
+  phase: "Running"
+  conditions {
+    type: "Initialized"
+    status: "True"
+    lastProbeTime {
+    }
+    lastTransitionTime {
+      seconds: 1672803940
+      nanos: 0
+    }
+    reason: ""
+    message: ""
+  }
+  conditions {
+    type: "Ready"
+    status: "True"
+    lastProbeTime {
+    }
+    lastTransitionTime {
+      seconds: 1677462082
+      nanos: 0
+    }
+    reason: ""
+    message: ""
+  }
+  conditions {
+    type: "ContainersReady"
+    status: "True"
+    lastProbeTime {
+    }
+    lastTransitionTime {
+      seconds: 1677462082
+      nanos: 0
+    }
+    reason: ""
+    message: ""
+  }
+  conditions {
+    type: "PodScheduled"
+    status: "True"
+    lastProbeTime {
+    }
+    lastTransitionTime {
+      seconds: 1672803940
+      nanos: 0
+    }
+    reason: ""
+    message: ""
+  }
+  message: ""
+  reason: ""
+  hostIP: "172.168.113.110"
+  podIP: "10.42.0.199"
+  startTime {
+    seconds: 1672803940
+    nanos: 0
+  }
+  containerStatuses {
+    name: "filebeat-contain"
+    state {
+      running {
+        startedAt {
+          seconds: 1677462082
+          nanos: 0
+        }
+      }
+    }
+    lastState {
+      terminated {
+        exitCode: 255
+        signal: 0
+        reason: "Unknown"
+        message: ""
+        startedAt {
+          seconds: 1675301289
+          nanos: 0
+        }
+        finishedAt {
+          seconds: 1677462025
+          nanos: 0
+        }
+        containerID: "containerd://308450058839fd5676471ca8bed8c830b1bfdf17d33bf00c174e526066d549eb"
+      }
+    }
+    ready: true
+    restartCount: 15
+    image: "docker.elastic.co/beats/filebeat:7.17.0"
+    imageID: "docker.elastic.co/beats/filebeat@sha256:f71bc98cae85db7812ff6e7fc3f7f3fdd37cda162ff3fefa5c3a55cb31e21e6e"
+    containerID: "containerd://dbdec9e3fbd33d30f1b8ba2ae1ac35b0674d0f1bda9d3d17b1ff2cb8bf3adab2"
+    started: true
+  }
+  qosClass: "BestEffort"
+  nominatedNodeName: ""
+  podIPs {
+    ip: "10.42.0.199"
+  }
+}
+
