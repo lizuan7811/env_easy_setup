@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import org.springframework.util.ReflectionUtils;
 
 import env_easy_setup.Model.TlsConfig;
 import lombok.Data;
+import shellutils.ShellUtils;
 @Data
 @Configuration
 public class EveryStepMethod {
@@ -73,61 +76,16 @@ public class EveryStepMethod {
 //		根據蒐集到為true的項目去執行讀取shell script，確認檔案是否存在，檔案均存在>繼續執行，否則需要建立相對應的檔案。
 		if (initSysInfo() ) {
 			System.out.printf("Start to execute shells!");
-			System.out.println(itemsPathMap.size());
 			assert (itemsPathMap.size() > 0);
-			selectedItems.forEach(System.out::println);
 			
-			this.selectedItems.stream().forEach(obj->{
-//				sysinfo-init.sh 初始化系統 執行
-				sysInfoShell();
-				processBuilder(obj);
-//				firewallcmd-init.sh 防火牆設定
-				firewallCmdShell();
-//				docker-init.sh 安裝
-				dockerShell();
-//				harbor-init.sh 安裝
-				harborShell();
-//				rke2-init.sh 安裝rke2
-				rke2InitShell();
-//				rancher-init.sh 安裝k3s+rancher
-//				kafka-init.sh 安裝kafka
-				kafkaInitShell();
-//				filebeat-init.sh 安裝
-				fileBeatInitShell();
-//				elasticsearch-init.sh 安裝
-//				kibana.sh 安裝
-//				execShellScript(obj);
+			this.selectedItems.stream().forEach(selectItemStr->{
+//				執行shell
+					System.out.printf(">>> %s: %s\n","執行",selectItemStr);
+					System.out.println(ShellUtils.execShell(selectItemStr));
+
 			});
 			System.out.printf("Finished execute shells!");
 		}
-	}
-
-	private void sysInfoShell() {
-		
-	}
-	
-	private void firewallCmdShell() {
-		
-	}
-	
-	private void dockerShell() {
-		
-	}
-	
-	private void harborShell() {
-		
-	}
-	
-	private void rke2InitShell() {
-		
-	}
-	
-	private void kafkaInitShell() {
-		
-	}
-	
-	private void fileBeatInitShell() {
-		
 	}
 	
 	/**
@@ -182,8 +140,6 @@ public class EveryStepMethod {
 	private boolean validFileExist(List<String> selectedItemsList) {
 		List<String> copiedItemsList = new ArrayList<String>(selectedItemsList);
 		
-		copiedItemsList.stream().forEach(System.out::println);
-		
 		itemsPathMap=new HashMap<String,String>();
 		try {
 //			ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
@@ -196,11 +152,8 @@ public class EveryStepMethod {
 
 				String fileName = path.toFile().getName();
 				String fileAbsolutePath=path.toFile().getAbsolutePath();
-//				System.out.println(fileName+"\t"+fileAbsolutePath);
 				String cutedFileName = fileName.indexOf("-")!=-1?fileName.substring(0, fileName.indexOf('-')):fileName;
-				System.out.println("copiedItemsList.contains\t"+cutedFileName+"\t"+copiedItemsList.contains(cutedFileName.toString()));
 				if (copiedItemsList.contains((String)cutedFileName)) {
-//					System.out.println("copiedItemsList.contains(cutedFileName)"+cutedFileName);
 //					*-*.sh
 					itemsPathMap.put(cutedFileName, path.toString());
 					copiedItemsList.remove(cutedFileName);
